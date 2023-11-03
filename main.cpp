@@ -8,13 +8,14 @@
 #include <string>
 
 // G4 includes
+#include <G4PhysListFactory.hh>
 #include <G4RunManagerFactory.hh>
 #include <G4UImanager.hh>
 
 // customization for Stopping Target studies
 #include <StoppingTargetActionInitialization.h>
 //#include <StoppingTargetDetectorConstruction.h>
-#include <StoppingTargetPhysicsList.h>
+//#include <StoppingTargetPhysicsList.h>
 
 using namespace std;
 
@@ -55,7 +56,11 @@ int main(int argc, char** argv){
     auto manager = G4RunManagerFactory::CreateRunManager();
     manager->SetUserInitialization(new StoppingTargetActionInitialization);
 //  manager->SetUserInitialization(new StoppingTargetDetectorConstruction);
-    manager->SetUserInitialization(new StoppingTargetPhysicsList);
+//  manager->SetUserInitialization(new StoppingTargetPhysicsList);
+    auto plf = G4PhysListFactory();
+    auto list = plf.GetReferencePhysList("FTFP_BERT");
+    manager->SetUserInitialization(list);
+
 //  manager->Initialize();
 
     return 0;
