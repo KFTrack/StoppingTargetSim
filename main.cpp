@@ -14,7 +14,7 @@
 
 // customization for Stopping Target studies
 #include <StoppingTargetActionInitialization.h>
-//#include <StoppingTargetDetectorConstruction.h>
+#include <StoppingTargetDetectorConstruction.h>
 //#include <StoppingTargetPhysicsList.h>
 
 using namespace std;
@@ -55,7 +55,7 @@ int main(int argc, char** argv){
     // instantiate run manager
     auto manager = G4RunManagerFactory::CreateRunManager();
     manager->SetUserInitialization(new StoppingTargetActionInitialization);
-//  manager->SetUserInitialization(new StoppingTargetDetectorConstruction);
+    manager->SetUserInitialization(new StoppingTargetDetectorConstruction);
 //  manager->SetUserInitialization(new StoppingTargetPhysicsList);
     auto plf = G4PhysListFactory();
     auto list = plf.GetReferencePhysList("FTFP_BERT");
