@@ -61,7 +61,7 @@ int main(int argc, char** argv){
     auto list = plf.GetReferencePhysList("FTFP_BERT");
     manager->SetUserInitialization(list);
 
-//  manager->Initialize();
+    manager->Initialize();
 
     return 0;
 }
