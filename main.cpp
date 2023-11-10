@@ -41,7 +41,7 @@ int main(int argc, char** argv){
     }
 
     if (ipath.size() == 0){
-        cerr << "error: must specify path to macro (-i)"
+        cerr << "error: must specify path to configuration (-i)"
              << endl;
         exit(1);
     }
@@ -53,6 +53,7 @@ int main(int argc, char** argv){
     }
 
     // instantiate run manager
+    // TODO details of initializations and geometries from config
     auto manager = G4RunManagerFactory::CreateRunManager();
     manager->SetUserInitialization(new StoppingTargetActionInitialization);
     manager->SetUserInitialization(new StoppingTargetDetectorConstruction);
@@ -62,6 +63,13 @@ int main(int argc, char** argv){
     manager->SetUserInitialization(list);
 
     manager->Initialize();
+
+    // run simulation
+    // TODO 1 -> # of simulations, from config
+    manager->BeamOn(1);
+
+    // clean up
+    delete manager;
 
     return 0;
 }
