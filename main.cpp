@@ -7,6 +7,10 @@
 #include <iostream>
 #include <string>
 
+// yaml parser
+#include <YamlParser.h>
+#include <c4/charconv.hpp>
+
 // G4 includes
 #include <G4PhysListFactory.hh>
 #include <G4RunManagerFactory.hh>
@@ -52,6 +56,10 @@ int main(int argc, char** argv){
              << endl;
     }
 
+    YamlParser parser;
+    YamlNode config = parser.Parse(ipath);
+    cout << "events: " << config["events"].val() << endl;
+
     // instantiate run manager
     // TODO details of initializations and geometries from config
     auto manager = G4RunManagerFactory::CreateRunManager();
@@ -65,8 +73,9 @@ int main(int argc, char** argv){
     manager->Initialize();
 
     // run simulation
-    // TODO 1 -> # of simulations, from config
-    manager->BeamOn(1);
+    unsigned int events;
+    c4::atou(config["events"].val(), &events);
+    manager->BeamOn(events);
 
     // clean up
     delete manager;
