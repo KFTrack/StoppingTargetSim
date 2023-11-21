@@ -37,7 +37,8 @@ YamlNode YamlParser::Parse(std::string path){
     this->trees.push_back(parse_yaml(path));
 
     // but return reference to root node
-    ryml::ConstNodeRef rv = this->trees.back().rootref();
+    ryml::ConstNodeRef root = this->trees.back().rootref();
+    YamlNode rv(root);
 
     return rv;
 }

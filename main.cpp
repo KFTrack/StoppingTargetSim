@@ -73,8 +73,7 @@ int main(int argc, char** argv){
     manager->Initialize();
 
     // run simulation
-    unsigned int events;
-    c4::atou(config["events"].val(), &events);
+    unsigned int events = config.Value<unsigned int>("events");
     manager->BeamOn(events);
 
     // clean up
