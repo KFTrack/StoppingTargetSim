@@ -2,6 +2,9 @@
 // User-level primary generator action
 // October 2023
 
+#ifndef STOPPINGTARGETPRIMARYGENERATORACTION_H
+#define STOPPINGTARGETPRIMARYGENERATORACTION_H
+
 #include <G4VUserPrimaryGeneratorAction.hh>
 #include <G4ParticleTable.hh>
 #include <G4ParticleGun.hh>
@@ -18,3 +21,5 @@ class StoppingTargetPrimaryGeneratorAction: public G4VUserPrimaryGeneratorAction
   private:
   	/**/
 };
+
+#endif

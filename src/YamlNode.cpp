@@ -23,6 +23,7 @@ YamlNode YamlNode::operator[](std::string key){
     return rv;
 }
 
+// specializations below offer a convenient abstraction of c4::* conversions
 template<>
 int YamlNode::Value(std::string key){
     int rv;
@@ -51,6 +52,7 @@ double YamlNode::Value(std::string key){
     return rv;
 }
 
+// woefully inefficient "freshman-copy" of string in stl container
 template<>
 std::string YamlNode::Value(std::string key){
     std::string rv = "";

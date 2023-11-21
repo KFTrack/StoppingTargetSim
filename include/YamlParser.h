@@ -2,6 +2,9 @@
 // Wrapper for yaml parser
 // November 2023
 
+#ifndef YAMLPARSER_H
+#define YAMLPARSER_H
+
 #include <fstream>
 #include <string>
 #include <vector>
@@ -23,3 +26,5 @@ class YamlParser{
   private:
     /**/
 };
+
+#endif

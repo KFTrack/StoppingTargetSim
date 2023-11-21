@@ -2,6 +2,9 @@
 // G4 example main file
 // November 2023
 
+#ifndef STOPPINGTARGETPHYSICSLIST_H
+#define STOPPINGTARGETPHYSICSLIST_H
+
 #include <G4VUserPhysicsList.hh>
 #include <G4BosonConstructor.hh>
 #include <G4LeptonConstructor.hh>
@@ -26,3 +29,5 @@ class StoppingTargetPhysicsList: public G4VUserPhysicsList{
   private:
     /**/
 };
+
+#endif

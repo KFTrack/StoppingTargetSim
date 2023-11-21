@@ -2,12 +2,13 @@
 // Wrapper for yaml representation
 // November 2023
 
+#ifndef YAMLNODE_H
+#define YAMLNODE_H
+
 #include <ryml.hpp>
 
 // ryml has thought the data structure through more thoroughly then we may
 // ever hope to
-//typedef ryml::ConstNodeRef YamlNode;
-
 class YamlNode: public ryml::ConstNodeRef{
   public:
     YamlNode();
@@ -23,3 +24,5 @@ class YamlNode: public ryml::ConstNodeRef{
   private:
     /**/
 };
+
+#endif

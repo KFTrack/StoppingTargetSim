@@ -2,6 +2,9 @@
 // User-level action initialization
 // October 2023
 
+#ifndef STOPPINGTARGETACTIONINITIALIZATION_H
+#define STOPPINGTARGETACTIONINITIALIZATION_H
+
 #include <G4VUserActionInitialization.hh>
 #include <StoppingTargetPrimaryGeneratorAction.h>
 
@@ -24,3 +27,5 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   private:
   	/**/
 };
+
+#endif
