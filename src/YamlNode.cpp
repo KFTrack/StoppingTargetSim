@@ -24,6 +24,7 @@ YamlNode YamlNode::operator[](std::string key){
 }
 
 // specializations below offer a convenient abstraction of c4::* conversions
+/* (N-1)-indexing is needlessly complicated
 template<>
 int YamlNode::Value(std::string key){
     int rv;
@@ -57,6 +58,48 @@ template<>
 std::string YamlNode::Value(std::string key){
     std::string rv = "";
     auto c4val = (*this)[key.c_str()].val();
+    for (unsigned int i = 0 ; i < c4val.size() ; i++){
+        rv += c4val[i];
+    }
+
+    return rv;
+}
+*/
+
+// specializations below conveniently underlying c4::* conversions
+template<>
+int YamlNode::Value(){
+    int rv;
+    c4::atoi((*this).val(), &rv);
+    return rv;
+}
+
+template<>
+unsigned int YamlNode::Value(){
+    unsigned int rv;
+    c4::atou((*this).val(), &rv);
+    return rv;
+}
+
+template<>
+float YamlNode::Value(){
+    float rv;
+    c4::atof((*this).val(), &rv);
+    return rv;
+}
+
+template<>
+double YamlNode::Value(){
+    double rv;
+    c4::atod((*this).val(), &rv);
+    return rv;
+}
+
+// woefully inefficient "freshman-copy" of string in stl container
+template<>
+std::string YamlNode::Value(){
+    std::string rv = "";
+    auto c4val = (*this).val();
     for (unsigned int i = 0 ; i < c4val.size() ; i++){
         rv += c4val[i];
     }

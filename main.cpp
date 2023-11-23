@@ -14,7 +14,9 @@
 // G4 includes
 #include <G4PhysListFactory.hh>
 #include <G4RunManagerFactory.hh>
+#include <G4UIExecutive.hh>
 #include <G4UImanager.hh>
+#include <G4VisExecutive.hh>
 
 // customization for Stopping Target studies
 #include <StoppingTargetActionInitialization.h>
@@ -27,7 +29,9 @@ int main(int argc, char** argv){
     int c;
     string ipath;
     string opath;
-    while ((c = getopt(argc, argv, "i:o:")) != -1){
+    bool vis = false;
+    bool shell = false;
+    while ((c = getopt(argc, argv, "i:o:vs")) != -1){
         switch(c){
             // path to macro
             case 'i':
@@ -36,6 +40,14 @@ int main(int argc, char** argv){
             // path to output
             case 'o':
                 opath = string(optarg);
+                break;
+            // optional visualization
+            case 'v':
+                vis = true;
+                break;
+            // optionally drop into G4 shell
+            case 's':
+                shell = true;
                 break;
             default:
                 cerr << "error: unexpected option"
@@ -58,7 +70,6 @@ int main(int argc, char** argv){
 
     YamlParser parser;
     YamlNode config = parser.Parse(ipath);
-    cout << "events: " << config["events"].val() << endl;
 
     // instantiate run manager
     // TODO details of initializations and geometries from config
@@ -73,8 +84,33 @@ int main(int argc, char** argv){
     manager->Initialize();
 
     // run simulation
-    unsigned int events = config.Value<unsigned int>("events");
+    unsigned int events = config["events"].Value<unsigned int>();
     manager->BeamOn(events);
+
+    // invoke G4 commands to enact visualization
+    G4VisExecutive* visMgr = NULL;
+    if (vis){
+        visMgr = new G4VisExecutive();
+        visMgr->Initialize();
+    }
+
+    // execute generic G4 commands; really, this should only be used for
+    // visualization or playing around
+    if (config.has_child("macro")){
+        G4UImanager* ui = G4UImanager::GetUIpointer();
+        auto commands = config["macro"];
+        // TODO iteration over sequence returns ryml::ConstNodeRef, but
+        // being able to directly iterate over YamlNodes would be nice
+        for (auto command : commands){
+            ui->ApplyCommand(YamlNode(command).Value<string>());
+        }
+    }
+
+    // drop into G4 shell, useful for playing around
+    if (shell){
+        G4UIExecutive* executive = new G4UIExecutive(argc, argv);
+        executive->SessionStart();
+    }
 
     // clean up
     delete manager;
