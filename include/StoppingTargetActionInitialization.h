@@ -5,8 +5,11 @@
 #ifndef STOPPINGTARGETACTIONINITIALIZATION_H
 #define STOPPINGTARGETACTIONINITIALIZATION_H
 
+#include <iostream>
 #include <G4VUserActionInitialization.hh>
 #include <StoppingTargetPrimaryGeneratorAction.h>
+#include <TrackBookkeeper.h>
+#include <ASCIITrackingSink.h>
 
 class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   public:
@@ -21,7 +24,6 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
     // G4UserTrackingAction         : begin-/end-of-track actions / bookkeeping
     // G4UserSteppingAction         : end-of-step actions / bookkeeping
     void Build() const;
-
   protected:
   	/**/
   private:
