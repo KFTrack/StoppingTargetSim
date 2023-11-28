@@ -2,8 +2,8 @@
 // Container class to allow iterating over types in a sane (?) way
 // December 2022; November 2023
 
-#ifndef NTUPLEFIELDS_H__
-#define NTUPLEFIELDS_H__
+#ifndef NTUPLEFIELDS_H
+#define NTUPLEFIELDS_H
 
 #include <map>
 #include <string>

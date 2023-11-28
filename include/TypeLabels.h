@@ -2,8 +2,8 @@
 // Forward mapping from typenames to string labels
 // This is the mechanism upon which ``type-iteration'' rests, hacky as it is
 
-#ifndef TYPELABELS_H__
-#define TYPELABELS_H__
+#ifndef TYPELABELS_H
+#define TYPELABELS_H
 
 #include <TTree.h>
 #include <string>

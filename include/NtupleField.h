@@ -2,8 +2,8 @@
 // Factor out some of the ROOT-related bullshit
 // December 2022; November 2023
 
-#ifndef NTUPLEFIELD_H__
-#define NTUPLEFIELD_H__
+#ifndef NTUPLEFIELD_H
+#define NTUPLEFIELD_H
 
 #include <map>
 #include <string>
