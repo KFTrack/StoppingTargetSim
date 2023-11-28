@@ -20,10 +20,11 @@ class NtupleTrackingSink: public TrackingSink{
   protected:
     TFile file;
     TTree* tree;
+
+    // home-rolled interface to TTree management
     NtupleFields ntuple;
   private:
     /**/
 };
 
 #endif
-
