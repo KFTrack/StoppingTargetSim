@@ -12,7 +12,8 @@
 #include <c4/charconv.hpp>
 
 // ROOT includes
-#include <TROOT.h>
+//#include <TROOT.h>
+#include <TApplication.h>
 
 // G4 includes
 #include <G4PhysListFactory.hh>
@@ -76,6 +77,7 @@ int main(int argc, char** argv){
 
 //  will likely be necessary for multi-threaded G4, but we aren't there yet
 //  ROOT::EnableThreadSafety();
+    TApplication app("TApplication", 0, NULL);
 
     // instantiate run manager
     // TODO details of initializations and geometries from config
