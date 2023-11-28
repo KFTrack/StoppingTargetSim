@@ -8,8 +8,10 @@ SRC			:= main.cpp
 CPPFLAGS	:= -g -Og
 CPPFLAGS	:= $(CPPFLAGS) -I./include
 CPPFLAGS	:= $(CPPFLAGS) $(shell geant4-config --cflags)
+CPPFLAGS	:= $(CPPFLAGS) $(shell root-config --cflags)
 CPPFLAGS	:= $(CPPFLAGS) -I$(RYML_DIR)/include
 LDFLAGS		:= $(LDFLAGS) $(shell geant4-config --libs)
+LDFLAGS		:= $(LDFLAGS) $(shell root-config --libs)
 LDFLAGS		:= $(LDFLAGS) -L$(RYML_DIR)/lib -lryml
 
 SRCDIR		:= ./src

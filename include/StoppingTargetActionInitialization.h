@@ -9,7 +9,7 @@
 #include <G4VUserActionInitialization.hh>
 #include <StoppingTargetPrimaryGeneratorAction.h>
 #include <TrackBookkeeper.h>
-#include <ASCIITrackingSink.h>
+#include <NtupleTrackingSink.h>
 
 class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   public:

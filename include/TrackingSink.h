@@ -11,7 +11,7 @@
 class TrackingSink{
   public:
     TrackingSink();
-   ~TrackingSink();
+    virtual ~TrackingSink();
     virtual void PreDigest(const G4Track*);
     virtual void PostDigest(const G4Track*);
     virtual void PreDigest(const G4Step*);

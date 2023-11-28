@@ -9,7 +9,7 @@ TrackBookkeeper::TrackBookkeeper(){
 }
 
 TrackBookkeeper::~TrackBookkeeper(){
-    /**/
+    delete this->sink;
 }
 
 TrackBookkeeper::TrackBookkeeper(TrackingSink* sink){

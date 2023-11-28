@@ -11,6 +11,9 @@
 #include <YamlParser.h>
 #include <c4/charconv.hpp>
 
+// ROOT includes
+#include <TROOT.h>
+
 // G4 includes
 #include <G4PhysListFactory.hh>
 #include <G4RunManagerFactory.hh>
@@ -71,15 +74,18 @@ int main(int argc, char** argv){
     YamlParser parser;
     YamlNode config = parser.Parse(ipath);
 
+//  will likely be necessary for multi-threaded G4, but we aren't there yet
+//  ROOT::EnableThreadSafety();
+
     // instantiate run manager
     // TODO details of initializations and geometries from config
     auto manager = G4RunManagerFactory::CreateRunManager();
-    manager->SetUserInitialization(new StoppingTargetActionInitialization);
-    manager->SetUserInitialization(new StoppingTargetDetectorConstruction);
 //  manager->SetUserInitialization(new StoppingTargetPhysicsList);
     auto plf = G4PhysListFactory();
     auto list = plf.GetReferencePhysList("FTFP_BERT");
     manager->SetUserInitialization(list);
+    manager->SetUserInitialization(new StoppingTargetActionInitialization);
+    manager->SetUserInitialization(new StoppingTargetDetectorConstruction);
 
     manager->Initialize();
 

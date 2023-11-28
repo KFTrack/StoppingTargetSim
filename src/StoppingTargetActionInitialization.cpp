@@ -31,7 +31,7 @@ void StoppingTargetActionInitialization::Build() const{
 
     // G4UserTrackingAction: begin-/end-of-track actions / bookkeeping
     // this->SetUserAction(G4UserTrackingAction*);
-    auto sink = new ASCIITrackingSink(std::cout);
+    auto sink = new NtupleTrackingSink("./out.root");
     auto tbk = new TrackBookkeeper(sink);
     this->SetUserAction(tbk);
 
