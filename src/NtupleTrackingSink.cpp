@@ -31,8 +31,8 @@ NtupleTrackingSink::NtupleTrackingSink(std::string path){
 
 NtupleTrackingSink::~NtupleTrackingSink(){
     this->tree->Write();
-//  this->file.Close();
-//  delete this->tree;
+    this->file.Close();
+    delete this->tree;
 }
 
 void NtupleTrackingSink::PreDigest(const G4Track* track){
