@@ -82,6 +82,11 @@ void NtupleTrackingSink::PreDigest(const G4Track* track){
 }
 
 void NtupleTrackingSink::PostDigest(const G4Track* track){
+    // below demonstrates that the value is correctly set...
+    // but, for some reason, not correetly written into the root file...
+//  auto something = this->ntuple.Get<char*>("start_volume");
+//  std::string str(something);
+
     // position
     G4ThreeVector pos = track->GetPosition();
     this->ntuple.Set("end_position_x", pos.getX());

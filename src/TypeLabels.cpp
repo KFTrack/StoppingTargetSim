@@ -9,6 +9,9 @@ std::string GetTypeCode(std::string label){
     if (label == "char*"){
         rv = "C";
     }
+    if (label == "const char*"){
+        rv = "C";
+    }
     else if (label == "Char_t"){
         rv = "B";
     }
@@ -67,7 +70,7 @@ std::string GetTypeLabel<char*>(){
 
 template<>
 std::string GetTypeLabel<const char*>(){
-    std::string rv = "char*";
+    std::string rv = "const char*";
     return rv;
 }
 
