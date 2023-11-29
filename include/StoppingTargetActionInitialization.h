@@ -5,7 +5,7 @@
 #ifndef STOPPINGTARGETACTIONINITIALIZATION_H
 #define STOPPINGTARGETACTIONINITIALIZATION_H
 
-#include <iostream>
+#include <string>
 #include <G4VUserActionInitialization.hh>
 #include <StoppingTargetPrimaryGeneratorAction.h>
 #include <TrackBookkeeper.h>
@@ -15,6 +15,7 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   public:
     StoppingTargetActionInitialization();
    ~StoppingTargetActionInitialization();
+    StoppingTargetActionInitialization(std::string opath);
 
     // instantiate / register subclasses of the following:
     // G4VUserPrimaryGeneratorAction: specify primary particles
@@ -25,7 +26,7 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
     // G4UserSteppingAction         : end-of-step actions / bookkeeping
     void Build() const;
   protected:
-  	/**/
+    std::string opath;
   private:
   	/**/
 };

@@ -66,6 +66,12 @@ std::string GetTypeLabel<char*>(){
 }
 
 template<>
+std::string GetTypeLabel<const char*>(){
+    std::string rv = "char*";
+    return rv;
+}
+
+template<>
 std::string GetTypeLabel<Char_t>(){
     std::string rv = "Char_t";
     return rv;

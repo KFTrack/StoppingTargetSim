@@ -20,7 +20,7 @@ class NtupleField{
     std::string GetCode();
     std::string GetROOTSpec();
     T* GetStorageAddress();
-    void Set(T value);
+    void Set(const T value);
   protected:
     std::string name;
     std::string type;

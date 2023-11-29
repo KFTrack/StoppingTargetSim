@@ -5,7 +5,7 @@
 EXE			:= example
 SRC			:= main.cpp
 
-CPPFLAGS	:= -g -Og
+CPPFLAGS	:= -g -Og -gdwarf-2
 CPPFLAGS	:= $(CPPFLAGS) -I./include
 CPPFLAGS	:= $(CPPFLAGS) $(shell geant4-config --cflags)
 CPPFLAGS	:= $(CPPFLAGS) $(shell root-config --cflags)

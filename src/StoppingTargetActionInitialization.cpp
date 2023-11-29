@@ -12,6 +12,10 @@ StoppingTargetActionInitialization::~StoppingTargetActionInitialization(){
     /**/
 }
 
+StoppingTargetActionInitialization::StoppingTargetActionInitialization(std::string opath){
+    this->opath = opath;
+}
+
 void StoppingTargetActionInitialization::Build() const{
     // call below, as applicable
 
@@ -31,7 +35,7 @@ void StoppingTargetActionInitialization::Build() const{
 
     // G4UserTrackingAction: begin-/end-of-track actions / bookkeeping
     // this->SetUserAction(G4UserTrackingAction*);
-    auto sink = new NtupleTrackingSink("./out.root");
+    auto sink = new NtupleTrackingSink(this->opath);
     auto tbk = new TrackBookkeeper(sink);
     this->SetUserAction(tbk);
 

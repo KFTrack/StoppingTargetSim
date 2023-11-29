@@ -86,8 +86,10 @@ int main(int argc, char** argv){
     auto plf = G4PhysListFactory();
     auto list = plf.GetReferencePhysList("FTFP_BERT");
     manager->SetUserInitialization(list);
-    manager->SetUserInitialization(new StoppingTargetActionInitialization);
-    manager->SetUserInitialization(new StoppingTargetDetectorConstruction);
+    auto stai = new StoppingTargetActionInitialization(opath);
+    manager->SetUserInitialization(stai);
+    auto stdc = new StoppingTargetDetectorConstruction();
+    manager->SetUserInitialization(stdc);
 
     manager->Initialize();
 

@@ -6,6 +6,7 @@
 
 NtupleFields::NtupleFields(){
     this->initialize<char*>     ();
+    this->initialize<const char*>     ();
     this->initialize<Char_t>    ();
     this->initialize<UChar_t>   ();
     this->initialize<Short_t>   ();
@@ -30,6 +31,7 @@ NtupleFields::~NtupleFields(){
 
 void NtupleFields::SetBranchAddresses(TTree* tree){
     this->SetBranchAddressesTyped<char*>     (tree);
+    this->SetBranchAddressesTyped<const char*>     (tree);
     this->SetBranchAddressesTyped<Char_t>    (tree);
     this->SetBranchAddressesTyped<UChar_t>   (tree);
     this->SetBranchAddressesTyped<Short_t>   (tree);
@@ -49,6 +51,7 @@ void NtupleFields::SetBranchAddresses(TTree* tree){
 
 void NtupleFields::Branches(TTree* tree){
     this->BranchesTyped<char*>     (tree);
+    this->BranchesTyped<const char*>     (tree);
     this->BranchesTyped<Char_t>    (tree);
     this->BranchesTyped<UChar_t>   (tree);
     this->BranchesTyped<Short_t>   (tree);

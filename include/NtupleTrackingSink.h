@@ -5,11 +5,12 @@
 #ifndef TNTUPLETRACKINGSINK_H
 #define TNTUPLETRACKINGSINK_H
 
+#include <string>
 #include <TFile.h>
 #include <TTree.h>
+#include <G4VProcess.hh>
 #include <NtupleFields.h>
 #include <TrackingSink.h>
-#include <string>
 
 class NtupleTrackingSink: public TrackingSink{
   public:
@@ -23,6 +24,11 @@ class NtupleTrackingSink: public TrackingSink{
 
     // home-rolled interface to TTree management
     NtupleFields ntuple;
+    char start_volume[128];
+    char start_process[128];
+    char end_volume[128];
+    char end_process[128];
+
   private:
     /**/
 };

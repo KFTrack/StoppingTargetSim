@@ -31,6 +31,10 @@ class NtupleFields{
     void Branches(TTree* tree);
 
     template<typename T>
+    T* GetStorageAddress(std::string name);
+    template<typename T>
+    T Get(std::string name);
+    template<typename T>
     void Set(std::string name, T value);
 
   protected:
@@ -88,6 +92,22 @@ void NtupleFields::BranchesTyped(TTree* tree){
         T* addr = field->GetStorageAddress();
         tree->Branch(field->GetName().c_str(), addr, field->GetROOTSpec().c_str());
     }
+}
+
+template<typename T>
+T* NtupleFields::GetStorageAddress(std::string name){
+    std::string type = GetTypeLabel<T>();
+    std::map< std::string, void* >& stored = this->maps[type];
+    NtupleField<T>* field = (NtupleField<T>*) stored[name];
+    T* rv = field->GetStorageAddress();
+    return rv;
+}
+
+template<typename T>
+T NtupleFields::Get(std::string name){
+    T* ptr = this->GetStorageAddress<T>(name);
+    T rv = *ptr;
+    return rv;
 }
 
 template<typename T>
