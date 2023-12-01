@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <TTree.h>
 #include <TypeLabels.h>
 
 template <typename T>
@@ -21,7 +22,11 @@ class NtupleField{
     std::string GetROOTSpec();
     T* GetStorageAddress();
     void Set(const T value);
+    void SetBranchAddress(TTree* tree);
+    void Branch(TTree* tree);
   protected:
+    void ConstructType();
+    void DestructType();
     std::string name;
     std::string type;
     T storage;
@@ -31,18 +36,31 @@ class NtupleField{
 
 template <typename T>
 NtupleField<T>::NtupleField(){
-    /* */
+    this->ConstructType();
 }
 
 template <typename T>
 NtupleField<T>::NtupleField(std::string name){
     this->name = name;
+    ((NtupleField<T>*) this)->ConstructType();
     this->type = GetTypeLabel<T>();
 }
 
 template <typename T>
 NtupleField<T>::~NtupleField(){
-    /* */
+    this->DestructType();
+}
+
+// must be non-empty in order for specialized templates to resolve
+template <typename T>
+void NtupleField<T>::ConstructType(){
+    this->storage = 0;
+}
+
+// must be non-empty in order for specialized templates to resolve
+template <typename T>
+void NtupleField<T>::DestructType(){
+    this->storage = 0;
 }
 
 template <typename T>
@@ -78,6 +96,18 @@ T* NtupleField<T>::GetStorageAddress(){
 template <typename T>
 void NtupleField<T>::Set(T value){
     this->storage = value;
+}
+
+template <typename T>
+void NtupleField<T>::SetBranchAddress(TTree* tree){
+    T* addr = this->GetStorageAddress();
+    tree->SetBranchAddress(this->GetName().c_str(), addr);
+}
+
+template <typename T>
+void NtupleField<T>::Branch(TTree* tree){
+    T* addr = this->GetStorageAddress();
+    tree->Branch(this->GetName().c_str(), addr, this->GetROOTSpec().c_str());
 }
 
 #endif

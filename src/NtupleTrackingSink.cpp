@@ -67,18 +67,18 @@ void NtupleTrackingSink::PreDigest(const G4Track* track){
     this->ntuple.Set("start_kinetic_energy", track->GetKineticEnergy());
 
     // strings
-//  std::string volume = track->GetVolume()->GetName();
-//  sprintf(this->start_volume, "%s", volume.c_str());
-//  this->ntuple.Set("start_volume", this->start_volume);
-//  const G4VProcess* ptr = track->GetCreatorProcess();
-//  if (ptr == NULL){
-//      sprintf(this->start_process, "");
-//  }
-//  else{
-//      const G4String& process = ptr->GetProcessName();
-//      sprintf(this->start_process, "%s", process.c_str());
-//  }
-//  this->ntuple.Set("start_process", this->start_process);
+    std::string volume = track->GetVolume()->GetName();
+    sprintf(this->start_volume, "%s", volume.c_str());
+    this->ntuple.Set("start_volume", this->start_volume);
+    const G4VProcess* ptr = track->GetCreatorProcess();
+    if (ptr == NULL){
+        sprintf(this->start_process, "");
+    }
+    else{
+        const G4String& process = ptr->GetProcessName();
+        sprintf(this->start_process, "%s", process.c_str());
+    }
+    this->ntuple.Set("start_process", this->start_process);
 }
 
 void NtupleTrackingSink::PostDigest(const G4Track* track){
@@ -103,18 +103,18 @@ void NtupleTrackingSink::PostDigest(const G4Track* track){
     this->ntuple.Set("end_kinetic_energy", track->GetKineticEnergy());
 
     // strings
-//  std::string volume = track->GetVolume()->GetName();
-//  sprintf(this->end_volume, "%s", volume.c_str());
-//  this->ntuple.Set("end_volume", this->end_volume);
-//  const G4VProcess* ptr = track->GetCreatorProcess();
-//  if (ptr == NULL){
-//      sprintf(this->end_process, "");
-//  }
-//  else{
-//      const G4String& process = ptr->GetProcessName();
-//      sprintf(this->end_process, "%s", process.c_str());
-//  }
-//  this->ntuple.Set("end_process", this->end_process);
+    std::string volume = track->GetVolume()->GetName();
+    sprintf(this->end_volume, "%s", volume.c_str());
+    this->ntuple.Set("end_volume", this->end_volume);
+    const G4VProcess* ptr = track->GetCreatorProcess();
+    if (ptr == NULL){
+        sprintf(this->end_process, "");
+    }
+    else{
+        const G4String& process = ptr->GetProcessName();
+        sprintf(this->end_process, "%s", process.c_str());
+    }
+    this->ntuple.Set("end_process", this->end_process);
 
     // flush to output
     this->tree->Fill();

@@ -79,8 +79,9 @@ void NtupleFields::SetBranchAddressesTyped(TTree* tree){
     std::vector< NtupleField<T>* > fields = this->GetFields<T>();
     for (int i = 0 ; i < fields.size() ; i++){
         NtupleField<T>* field = fields[i];
-        T* addr = field->GetStorageAddress();
-        tree->SetBranchAddress(field->GetName().c_str(), addr);
+//      T* addr = field->GetStorageAddress();
+//      tree->SetBranchAddress(field->GetName().c_str(), addr);
+        field->SetBranchAddress(tree);
     }
 }
 
@@ -89,8 +90,9 @@ void NtupleFields::BranchesTyped(TTree* tree){
     std::vector< NtupleField<T>* > fields = this->GetFields<T>();
     for (int i = 0 ; i < fields.size() ; i++){
         NtupleField<T>* field = fields[i];
-        T* addr = field->GetStorageAddress();
-        tree->Branch(field->GetName().c_str(), addr, field->GetROOTSpec().c_str());
+//      T* addr = field->GetStorageAddress();
+//      tree->Branch(field->GetName().c_str(), addr, field->GetROOTSpec().c_str());
+        field->Branch(tree);
     }
 }
 
