@@ -42,8 +42,8 @@ NtupleField<T>::NtupleField(){
 template <typename T>
 NtupleField<T>::NtupleField(std::string name){
     this->name = name;
-    ((NtupleField<T>*) this)->ConstructType();
     this->type = GetTypeLabel<T>();
+    ((NtupleField<T>*) this)->ConstructType();
 }
 
 template <typename T>
