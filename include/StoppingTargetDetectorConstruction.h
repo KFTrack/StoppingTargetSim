@@ -13,12 +13,17 @@
 #include <G4NistManager.hh>
 #include <G4PVPlacement.hh>
 #include <G4VPhysicalVolume.hh>
+#include <G4Tubs.hh>
+#include <YamlParser.h>
+#include <string>
 
 class StoppingTargetDetectorConstruction: public G4VUserDetectorConstruction{
   public:
     StoppingTargetDetectorConstruction();
+    StoppingTargetDetectorConstruction(const YamlNode& node);
    ~StoppingTargetDetectorConstruction();
 
+    G4VPhysicalVolume* ConstructCustom();
     G4VPhysicalVolume* Construct();
   protected:
     /**/
