@@ -1,0 +1,10 @@
+*
+
+!.gitignore
+!*/src/*
+!*/include/*
+!main.cpp
+!Makefile
+!README.md
+!LICENSE
+!*/build/*
