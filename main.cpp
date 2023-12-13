@@ -88,7 +88,7 @@ int main(int argc, char** argv){
     manager->SetUserInitialization(list);
     auto stai = new StoppingTargetActionInitialization(opath);
     manager->SetUserInitialization(stai);
-    auto stdc = new StoppingTargetDetectorConstruction(config);
+    auto stdc = new StoppingTargetDetectorConstruction(config["detector"]);
     manager->SetUserInitialization(stdc);
 
     manager->Initialize();

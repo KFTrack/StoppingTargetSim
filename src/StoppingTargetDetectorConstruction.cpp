@@ -3,6 +3,7 @@
 // November 2023
 
 #include <StoppingTargetDetectorConstruction.h>
+using namespace std;
 
 StoppingTargetDetectorConstruction::StoppingTargetDetectorConstruction(){
     /**/
@@ -12,11 +13,18 @@ StoppingTargetDetectorConstruction::~StoppingTargetDetectorConstruction(){
     /**/
 }
 
-StoppingTargetDetectorConstruction::StoppingTargetDetectorConstruction(const YamlNode& node){
-    // auto dim = node["dim"];
-    // auto units = node["units"];
-    // printf("%u", node["dim"].Value<unsigned int>());
-    // printf(units.Value<string>());
+StoppingTargetDetectorConstruction::StoppingTargetDetectorConstruction(const YamlNode& detectorNode){
+    
+    auto creator = StoppingTargetConfigParser();
+
+    for (auto child: detectorNode) {
+        creator.CreateBooleanSolid(child);
+        // string name = YamlNode(child)["name"].Value<string>();
+        // string units = YamlNode(child)["units"].Value<string>();
+        // unsigned int dim = YamlNode(child)["dim"].Value<unsigned int>();
+        // printf("%s with side length %d %s\n", name.c_str(), dim, units.c_str());
+    }
+    
 }
 
 G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCustom(){

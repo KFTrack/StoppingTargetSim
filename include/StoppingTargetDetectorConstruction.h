@@ -5,6 +5,7 @@
 #ifndef STOPPINGTARGETDETECTORCONSTRUCTION_H
 #define STOPPINGTARGETDETECTORCONSTRUCTION_H
 
+// G4 libraries
 #include <CLHEP/Units/SystemOfUnits.h>
 #include <G4Box.hh>
 #include <G4VUserDetectorConstruction.hh>
@@ -14,8 +15,10 @@
 #include <G4PVPlacement.hh>
 #include <G4VPhysicalVolume.hh>
 #include <G4Tubs.hh>
+
+// Other libraries
 #include <YamlParser.h>
-#include <string>
+#include <StoppingTargetConfigParser.h>
 
 class StoppingTargetDetectorConstruction: public G4VUserDetectorConstruction{
   public:

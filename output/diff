@@ -1,0 +1,41 @@
+868,876d867
+< G4WT2 > G4ParticleGun::mu-
+< G4WT2 >  was defined in terms of KineticEnergy: 1GeV
+< G4WT2 >  is now defined in terms Momentum: 0.05GeV/c
+< G4WT4 > G4ParticleGun::mu-
+< G4WT4 >  was defined in terms of KineticEnergy: 1GeV
+< G4WT4 >  is now defined in terms Momentum: 0.05GeV/c
+< G4WT6 > G4ParticleGun::mu-
+< G4WT6 >  was defined in terms of KineticEnergy: 1GeV
+< G4WT6 >  is now defined in terms Momentum: 0.05GeV/c
+880,888d870
+< G4WT10 > G4ParticleGun::mu-
+< G4WT10 >  was defined in terms of KineticEnergy: 1GeV
+< G4WT10 >  is now defined in terms Momentum: 0.05GeV/c
+< G4WT9 > G4ParticleGun::mu-
+< G4WT9 >  was defined in terms of KineticEnergy: 1GeV
+< G4WT9 >  is now defined in terms Momentum: 0.05GeV/c
+< G4WT3 > G4ParticleGun::mu-
+< G4WT3 >  was defined in terms of KineticEnergy: 1GeV
+< G4WT3 >  is now defined in terms Momentum: 0.05GeV/c
+891a874,876
+> G4WT3 > G4ParticleGun::mu-
+> G4WT3 >  was defined in terms of KineticEnergy: 1GeV
+> G4WT3 >  is now defined in terms Momentum: 0.05GeV/c
+897a883,885
+> G4WT6 > G4ParticleGun::mu-
+> G4WT6 >  was defined in terms of KineticEnergy: 1GeV
+> G4WT6 >  is now defined in terms Momentum: 0.05GeV/c
+900a889,900
+> G4WT2 > G4ParticleGun::mu-
+> G4WT2 >  was defined in terms of KineticEnergy: 1GeV
+> G4WT2 >  is now defined in terms Momentum: 0.05GeV/c
+> G4WT9 > G4ParticleGun::mu-
+> G4WT9 >  was defined in terms of KineticEnergy: 1GeV
+> G4WT9 >  is now defined in terms Momentum: 0.05GeV/c
+> G4WT10 > G4ParticleGun::mu-
+> G4WT10 >  was defined in terms of KineticEnergy: 1GeV
+> G4WT10 >  is now defined in terms Momentum: 0.05GeV/c
+> G4WT4 > G4ParticleGun::mu-
+> G4WT4 >  was defined in terms of KineticEnergy: 1GeV
+> G4WT4 >  is now defined in terms Momentum: 0.05GeV/c
