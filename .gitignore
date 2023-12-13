@@ -1,10 +1,10 @@
 *
 
 !.gitignore
-!*/src/*
-!*/include/*
+!/src
+!/include
 !main.cpp
 !Makefile
 !README.md
 !LICENSE
-!*/build/*
+!/build
