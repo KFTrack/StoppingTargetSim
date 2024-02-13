@@ -26,12 +26,14 @@ class StoppingTargetDetectorConstruction: public G4VUserDetectorConstruction{
     StoppingTargetDetectorConstruction(const YamlNode& node);
    ~StoppingTargetDetectorConstruction();
 
+    void CreateWorldLog();
     G4VPhysicalVolume* ConstructCustom();
     G4VPhysicalVolume* Construct();
   protected:
     /**/
   private:
-    /**/
+    G4LogicalVolume* world_log;
+    YamlNode parameters;
 };
 
 #endif

@@ -11,7 +11,10 @@
 #include <G4NistManager.hh>
 #include <G4PVPlacement.hh>
 #include <G4VPhysicalVolume.hh>
+#include <G4PVPlacement.hh>
+#include <G4VPhysicalVolume.hh>
 #include <G4Tubs.hh>
+#include <G4Sphere.hh>
 
 #include <YamlParser.h>
 #include <unordered_map>
@@ -19,20 +22,10 @@ using namespace std;
 
 class StoppingTargetConfigParser {
     public:
-      StoppingTargetConfigParser(double _dim);
+      StoppingTargetConfigParser(G4LogicalVolume* _world_log);
      ~StoppingTargetConfigParser();
 
-      struct BOXData { string pName; int pLen; };
-      struct SPHEREData { string pName; int pRad; };
-
-      enum SOLID_SHAPE
-      {
-          BOX,
-          SPHERE,
-          TUBS
-      };
-
-     G4VSolid* CreateBooleanSolid(const YamlNode& config);
+     void CreateSolid(const YamlNode& config);
     protected:
     /**/
     private:
@@ -40,11 +33,15 @@ class StoppingTargetConfigParser {
       G4NistManager* nist;
       
       G4VSolid* getVSolid(string shape, const YamlNode& parameters);
+      G4LogicalVolume* getLogVolume(const YamlNode& param_node, G4VSolid* solid);
+      void placeSolid(const YamlNode& param_node, G4LogicalVolume* log_volume);
 
-      template<typename T>
-      T* constructor(YamlNode node);
-      
-      G4VSolid* defineBox(const YamlNode& param);
-      G4VSolid* defineSphere(const YamlNode& params);
+      // template<typename T>
+      // T* constructor(const YamlNode& node);
+
+      G4VSolid* constructorBoxVSolid(const YamlNode& paramNode);
+      G4VSolid* constructorSphereVSolid(const YamlNode& paramNode);
+      G4VSolid* constructorTubsVSolid(const YamlNode& paramNode);
+
 
 };

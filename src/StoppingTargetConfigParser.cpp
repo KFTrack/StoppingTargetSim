@@ -5,17 +5,9 @@
 #include <StoppingTargetConfigParser.h>
 using namespace std;
 
-StoppingTargetConfigParser::StoppingTargetConfigParser(double dim){
-    // Move to detector construction
-    dim = dim * CLHEP::m;
-
+StoppingTargetConfigParser::StoppingTargetConfigParser(G4LogicalVolume* _world_log){
     nist = G4NistManager::Instance();
-    G4Material* world_material = nist->FindOrBuildMaterial("G4_AIR");
-    G4Box* world_solid = new G4Box("world", dim, dim, dim);
-    
-    world_log = new G4LogicalVolume(world_solid, world_material, "world"); 
-
-    // std::map[SOLID_SHAPE::BOX]=G4Box;
+    world_log = _world_log;
 }
 
 StoppingTargetConfigParser::~StoppingTargetConfigParser(){
@@ -23,45 +15,106 @@ StoppingTargetConfigParser::~StoppingTargetConfigParser(){
 }
 
 G4VSolid* StoppingTargetConfigParser::getVSolid(string name, const YamlNode& parameters) {
-    SOLID_SHAPE shape = SOLID_SHAPE::BOX;
     YamlNode params = YamlNode(parameters);
     G4VSolid* rv;
 
     // change to switch statement
-    if (!name.compare("box")) {
-        BOXData ptr;
-        ptr.pName = params["pName"].Value<string>();
-        ptr.pLen = params["pLen"].Value<int>();
-        // rv = new G4Box(ptr);
-
-    } else if(!name.compare("sphere")) {
-        SPHEREData ptr;
-        ptr.pName = params["pName"].Value<string>();
-        ptr.pRad = params["pRad"].Value<int>();
-        // rv = new G4Sphere(ptr);
+    if (name == "box") {
+        cout << "box" << endl;
+        rv = constructorBoxVSolid(params);
+    } else if(name == "sphere") {
+        cout << "sphere" << endl;
+        rv = constructorSphereVSolid(params);
+    } else if(name == "tubs") {
+        cout << "tube" << endl;
+        rv = constructorTubsVSolid(params);
     }
 
-    return nullptr;
-    //stl map
-}
-
-template<typename T>
-T* constructor(YamlNode node) {
-    T* rv = new T;
     return rv;
-    // look into variatic function arguments
 }
 
-G4VSolid* StoppingTargetConfigParser::CreateBooleanSolid(const YamlNode& config) {
-    YamlNode node = YamlNode(config);
+G4VSolid* StoppingTargetConfigParser::constructorBoxVSolid(const YamlNode& paramNode) {
+    G4VSolid* rv = nullptr;
+    YamlNode params = YamlNode(paramNode);
+    
+    string pName = params["pName"].Value<string>();
+    double pX = params["pX"].Value<double>() * CLHEP::m;
+    double pY = params["pY"].Value<double>() * CLHEP::m;
+    double pZ = params["pZ"].Value<double>() * CLHEP::m;
+    
+    rv = new G4Box(pName, pX, pY, pZ);
+    return rv;
+}
 
-    int pos = node["position"].Value<int>();
+G4VSolid* StoppingTargetConfigParser::constructorSphereVSolid(const YamlNode& paramNode) {
+    G4VSolid* rv = nullptr;
+    YamlNode params = YamlNode(paramNode);
+    
+    string pName = params["pName"].Value<string>();
+    double pRmin = params["pRmin"].Value<double>() * CLHEP::m;
+    double pRmax = params["pRmax"].Value<double>() * CLHEP::m;
+    double pSPhi = params["pSPhi"].Value<double>() * CLHEP::deg;
+    double pDPhi = params["pDPhi"].Value<double>() * CLHEP::deg;
+    double pSTheta = params["pSTheta"].Value<double>() * CLHEP::deg;
+    double pDTheta = params["pDTheta"].Value<double>() * CLHEP::deg;
+
+    rv = new G4Sphere(pName, pRmin, pRmax, pSPhi, pDPhi, pSTheta, pDTheta);
+    return rv;
+}
+
+G4VSolid* StoppingTargetConfigParser::constructorTubsVSolid(const YamlNode& paramNode) {
+    G4VSolid* rv = nullptr;
+    YamlNode params = YamlNode(paramNode);
+    
+    string pName = params["pName"].Value<string>();
+    double pRmin = params["pRmin"].Value<double>() * CLHEP::m;
+    double pRmax = params["pRmax"].Value<double>() * CLHEP::m;
+    double pDz = params["pSTheta"].Value<double>() * CLHEP::m;
+    double pSPhi = params["pSPhi"].Value<double>() * CLHEP::deg;
+    double pDPhi = params["pDPhi"].Value<double>() * CLHEP::deg;
+
+    rv = new G4Tubs(pName, pRmin, pRmax, pDz, pSPhi, pDPhi);
+    return rv;
+}
+
+
+G4LogicalVolume* StoppingTargetConfigParser::getLogVolume(const YamlNode& param_node, G4VSolid* solid) {
+    G4LogicalVolume* rv = nullptr;
+    YamlNode node = YamlNode(param_node);
+
+    string mat_str = node["material"].Value<string>();
+    string name = node["type"].Value<string>();
+    G4Material* material = nist->FindOrBuildMaterial(mat_str);
+
+    rv = new G4LogicalVolume(solid, material, name);
+    return rv;
+}
+
+void StoppingTargetConfigParser::placeSolid(const YamlNode& param_node, G4LogicalVolume* log_volume) {
+    YamlNode pos_node = YamlNode(param_node)["position"];
+
+    double posX = pos_node["x"].Value<double>() * CLHEP::m;
+    double posY = pos_node["y"].Value<double>() * CLHEP::m;
+    double posZ = pos_node["z"].Value<double>() * CLHEP::m;
+
+    G4ThreeVector posVec(posX, posY, posZ);
+
+    // Still need to implement rotation and whatever the last 2 parameters of the below function are
+    G4VPhysicalVolume* phys = new G4PVPlacement(0, posVec, log_volume, "solid", world_log, false, 0);
+}
+
+void StoppingTargetConfigParser::CreateSolid(const YamlNode& config) {
+    YamlNode node = YamlNode(config);
+    cout << node << endl;
+
+    // int pos = node["position"].Value<int>();
     string material = node["material"].Value<string>();
     string type_str = node["type"].Value<string>();
 
-    printf("type: %s, position: %d, material: %s\n", type_str.c_str(), pos, material.c_str());
+    printf("type: %s, material: %s\n", type_str.c_str(), material.c_str());
 
     G4VSolid* solid = getVSolid(type_str, node["parameters"]);
+    G4LogicalVolume* log_volume = getLogVolume(node, solid);
+    placeSolid(node, log_volume);
 
-    return nullptr;
 }
