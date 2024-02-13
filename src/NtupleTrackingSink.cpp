@@ -17,25 +17,33 @@ NtupleTrackingSink::NtupleTrackingSink(std::string path){
     this->ntuple.Register<Double_t> ("start_position_x");
     this->ntuple.Register<Double_t> ("start_position_y");
     this->ntuple.Register<Double_t> ("start_position_z");
-    this->ntuple.Register<Double_t> ("start_time");
+    this->ntuple.Register<Double_t> ("start_global_time");
+    this->ntuple.Register<Double_t> ("start_local_time");
     this->ntuple.Register<Double_t> ("start_momentum_x");
     this->ntuple.Register<Double_t> ("start_momentum_y");
     this->ntuple.Register<Double_t> ("start_momentum_z");
     this->ntuple.Register<Double_t> ("start_kinetic_energy");
     this->ntuple.Register<char*>    ("start_volume");
     this->ntuple.Register<char*>    ("start_process");
+    this->ntuple.Register<Double_t> ("start_track_length");
+    this->ntuple.Register<Int_t>    ("start_step_number");
+    this->ntuple.Register<Bool_t>   ("start_good_for_tracking");
 
     // ending information
     this->ntuple.Register<Double_t> ("end_position_x");
     this->ntuple.Register<Double_t> ("end_position_y");
     this->ntuple.Register<Double_t> ("end_position_z");
-    this->ntuple.Register<Double_t> ("end_time");
+    this->ntuple.Register<Double_t> ("end_global_time");
+    this->ntuple.Register<Double_t> ("end_local_time");
     this->ntuple.Register<Double_t> ("end_momentum_x");
     this->ntuple.Register<Double_t> ("end_momentum_y");
     this->ntuple.Register<Double_t> ("end_momentum_z");
     this->ntuple.Register<Double_t> ("end_kinetic_energy");
     this->ntuple.Register<char*>    ("end_volume");
     this->ntuple.Register<char*>    ("end_process");
+    this->ntuple.Register<Double_t> ("end_track_length");
+    this->ntuple.Register<Int_t>    ("end_step_number");
+    this->ntuple.Register<Bool_t>   ("end_good_for_tracking");
 
     // link to output
     this->ntuple.Branches(tree);
@@ -66,7 +74,8 @@ void NtupleTrackingSink::PreDigest(const G4Track* track){
     this->ntuple.Set("start_momentum_z", mom.getZ());
 
     // time
-    this->ntuple.Set("start_time", track->GetGlobalTime());
+    this->ntuple.Set("start_global_time", track->GetGlobalTime());
+    this->ntuple.Set("start_local_time", track->GetGlobalTime());
 
     // energy
     this->ntuple.Set("start_kinetic_energy", track->GetKineticEnergy());
@@ -84,6 +93,11 @@ void NtupleTrackingSink::PreDigest(const G4Track* track){
         sprintf(this->start_process, "%s", process.c_str());
     }
     this->ntuple.Set("start_process", this->start_process);
+
+    // miscellany
+    this->ntuple.Set("start_track_length", track->GetTrackLength());
+    this->ntuple.Set("start_step_number", track->GetCurrentStepNumber());
+    this->ntuple.Set("start_good_for_tracking", track->IsGoodForTracking());
 }
 
 void NtupleTrackingSink::PostDigest(const G4Track* track){
@@ -105,7 +119,8 @@ void NtupleTrackingSink::PostDigest(const G4Track* track){
     this->ntuple.Set("end_momentum_z", mom.getZ());
 
     // time
-    this->ntuple.Set("end_time", track->GetGlobalTime());
+    this->ntuple.Set("end_global_time", track->GetGlobalTime());
+    this->ntuple.Set("end_local_time", track->GetGlobalTime());
 
     // energy
     this->ntuple.Set("end_kinetic_energy", track->GetKineticEnergy());
@@ -123,6 +138,11 @@ void NtupleTrackingSink::PostDigest(const G4Track* track){
         sprintf(this->end_process, "%s", process.c_str());
     }
     this->ntuple.Set("end_process", this->end_process);
+
+    // miscellany
+    this->ntuple.Set("end_track_length", track->GetTrackLength());
+    this->ntuple.Set("end_step_number", track->GetCurrentStepNumber());
+    this->ntuple.Set("end_good_for_tracking", track->IsGoodForTracking());
 
     // flush to output
     this->tree->Fill();
