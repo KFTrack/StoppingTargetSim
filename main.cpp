@@ -21,6 +21,7 @@
 #include <G4UIExecutive.hh>
 #include <G4UImanager.hh>
 #include <G4VisExecutive.hh>
+#include <Randomize.hh>
 
 // customization for Stopping Target studies
 #include <StoppingTargetActionInitialization.h>
@@ -35,7 +36,8 @@ int main(int argc, char** argv){
     string opath;
     bool vis = false;
     bool shell = false;
-    while ((c = getopt(argc, argv, "i:o:vs")) != -1){
+    long seed = 1; // TODO hash of PID and system time
+    while ((c = getopt(argc, argv, "i:o:s:vx")) != -1){
         switch(c){
             // path to macro
             case 'i':
@@ -45,12 +47,16 @@ int main(int argc, char** argv){
             case 'o':
                 opath = string(optarg);
                 break;
+            // random seed
+            case 's':
+                seed = atol(optarg);
+                break;
             // optional visualization
             case 'v':
                 vis = true;
                 break;
             // optionally drop into G4 shell
-            case 's':
+            case 'x':
                 shell = true;
                 break;
             default:
@@ -74,6 +80,9 @@ int main(int argc, char** argv){
 
     YamlParser parser;
     YamlNode config = parser.Parse(ipath);
+
+    // random seed
+    CLHEP::HepRandom::setTheSeed(seed);
 
 //  will likely be necessary for multi-threaded G4, but we aren't there yet
 //  ROOT::EnableThreadSafety();
