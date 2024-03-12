@@ -15,6 +15,7 @@
 #include <G4VPhysicalVolume.hh>
 #include <G4Tubs.hh>
 #include <G4Sphere.hh>
+#include <G4Element.hh>
 
 #include <YamlParser.h>
 #include <unordered_map>

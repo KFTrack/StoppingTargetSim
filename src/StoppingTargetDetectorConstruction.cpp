@@ -28,14 +28,10 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCustom(){
     CreateWorldLog();
     auto parser = StoppingTargetConfigParser(world_log);
 
-//    for (auto child: detectorNode) {
-//        cout << child << endl;
-//        parser.CreateSolid(child);
-        // string name = YamlNode(child)["name"].Value<string>();
-        // string units = YamlNode(child)["units"].Value<string>();
-        // unsigned int dim = YamlNode(child)["dim"].Value<unsigned int>();
-        // printf("%s with side length %d %s\n", name.c_str(), dim, units.c_str());
-//    }
+   for (auto child: detectorNode) {
+       cout << child << endl;
+       parser.CreateSolid(child);
+   }
     
     G4ThreeVector origin(0.0, 0.0, 0.0);
     G4VPhysicalVolume* world_phys = new G4PVPlacement(0, origin, world_log, "world", NULL, false, 0);

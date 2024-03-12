@@ -84,9 +84,16 @@ G4LogicalVolume* StoppingTargetConfigParser::getLogVolume(const YamlNode& param_
 
     string mat_str = node["material"].Value<string>();
     string name = node["type"].Value<string>();
+    double density = node["density"].Value<double>()  * CLHEP::g / CLHEP::cm3;
+
     G4Material* material = nist->FindOrBuildMaterial(mat_str);
 
-    rv = new G4LogicalVolume(solid, material, name);
+    G4Material* env_mat = new G4Material("Custom Aluminum", 13.00, 26.981539, density=density);
+
+    cout << "MATERIAL FOR BOX SYNTHETIC: " << env_mat << endl;
+    cout << "MATERIAL FOR BOX REAL: " << material << endl;
+    
+    rv = new G4LogicalVolume(solid, env_mat, name);
     return rv;
 }
 
