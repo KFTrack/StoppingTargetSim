@@ -69,7 +69,7 @@ G4VSolid* StoppingTargetConfigParser::constructorTubsVSolid(const YamlNode& para
     string pName = params["pName"].Value<string>();
     double pRmin = params["pRmin"].Value<double>() * CLHEP::m;
     double pRmax = params["pRmax"].Value<double>() * CLHEP::m;
-    double pDz = params["pSTheta"].Value<double>() * CLHEP::m;
+    double pDz = params["pDz"].Value<double>() * CLHEP::m;
     double pSPhi = params["pSPhi"].Value<double>() * CLHEP::deg;
     double pDPhi = params["pDPhi"].Value<double>() * CLHEP::deg;
 
