@@ -19,7 +19,7 @@ StoppingTargetPrimaryGeneratorAction::StoppingTargetPrimaryGeneratorAction(){
     this->gun->SetParticlePosition(position);
 
     // canonical momentum entering detector solenoid
-    G4ThreeVector momentum(50.0 * CLHEP::MeV, 0.0, 0.0 * CLHEP::MeV);
+    G4ThreeVector momentum(0.0 * CLHEP::MeV, 0.0, 50.0 * CLHEP::MeV);
     this->gun->SetParticleMomentum(momentum);
 }
 
