@@ -39,7 +39,7 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCustom(){
 }
 
 void StoppingTargetDetectorConstruction::CreateWorldLog(){
-    double _dim = 10;
+    double _dim = 5;
     G4NistManager* nist = G4NistManager::Instance();
 
     // Move to detector construction
