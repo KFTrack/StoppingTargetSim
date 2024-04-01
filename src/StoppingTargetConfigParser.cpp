@@ -25,7 +25,7 @@ G4VSolid* StoppingTargetConfigParser::getVSolid(string name, const YamlNode& par
     } else if(name == "sphere") {
         cout << "sphere" << endl;
         rv = constructorSphereVSolid(params);
-    } else if(name == "tubs") {
+    } else if(name == "tube") {
         cout << "tube" << endl;
         rv = constructorTubsVSolid(params);
     }
@@ -97,8 +97,9 @@ G4LogicalVolume* StoppingTargetConfigParser::getLogVolume(const YamlNode& param_
     return rv;
 }
 
-void StoppingTargetConfigParser::placeSolid(const YamlNode& param_node, G4LogicalVolume* log_volume) {
+void StoppingTargetConfigParser::placeSolid(const YamlNode& param_node, G4LogicalVolume* log_volume, G4RotationMatrix* rotMat) {
     YamlNode pos_node = YamlNode(param_node)["position"];
+    string name = YamlNode(param_node)["parameters"]["pName"].Value<string>();
 
     double posX = pos_node["x"].Value<double>() * CLHEP::m;
     double posY = pos_node["y"].Value<double>() * CLHEP::m;
@@ -107,7 +108,23 @@ void StoppingTargetConfigParser::placeSolid(const YamlNode& param_node, G4Logica
     G4ThreeVector posVec(posX, posY, posZ);
 
     // Still need to implement rotation and whatever the last 2 parameters of the below function are
-    G4VPhysicalVolume* phys = new G4PVPlacement(0, posVec, log_volume, "solid", world_log, false, 0);
+    G4VPhysicalVolume* phys = new G4PVPlacement(rotMat, posVec, log_volume, name, world_log, false, 0);
+}
+
+G4RotationMatrix* StoppingTargetConfigParser::getRotation(const YamlNode& param_node) {
+    YamlNode node = YamlNode(param_node)["rotation"];
+
+    double x_ang = node["x"].Value<double>() * CLHEP::deg;
+    double y_ang = node["y"].Value<double>() * CLHEP::deg;
+    double z_ang = node["z"].Value<double>() * CLHEP::deg;
+
+    G4RotationMatrix* rot = new G4RotationMatrix;
+
+    rot->rotateX(x_ang);
+    rot->rotateY(y_ang);
+    rot->rotateZ(z_ang);
+
+    return rot;
 }
 
 void StoppingTargetConfigParser::CreateSolid(const YamlNode& config) {
@@ -122,6 +139,7 @@ void StoppingTargetConfigParser::CreateSolid(const YamlNode& config) {
 
     G4VSolid* solid = getVSolid(type_str, node["parameters"]);
     G4LogicalVolume* log_volume = getLogVolume(node, solid);
-    placeSolid(node, log_volume);
+    G4RotationMatrix* rot = getRotation(node);
+    placeSolid(node, log_volume, rot);
 
 }
