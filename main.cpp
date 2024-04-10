@@ -106,12 +106,12 @@ int main(int argc, char** argv){
     auto block = config["generator"];
     auto type = block["type"].Value<string>();
     if (type == "LinearMuonBeam"){
-        auto  x = block["position"]["x"].Value<double>() * CLHEP::meter;
-        auto  y = block["position"]["y"].Value<double>() * CLHEP::meter;
-        auto  z = block["position"]["z"].Value<double>() * CLHEP::meter;
-        auto px = block["momentum"]["x"].Value<double>() * CLHEP::MeV;
-        auto py = block["momentum"]["y"].Value<double>() * CLHEP::MeV;
-        auto pz = block["momentum"]["z"].Value<double>() * CLHEP::MeV;
+        auto  x = block["position"]["x"].Value<double>(); // mm
+        auto  y = block["position"]["y"].Value<double>(); // mm
+        auto  z = block["position"]["z"].Value<double>(); // mm
+        auto px = block["momentum"]["x"].Value<double>(); // MeV
+        auto py = block["momentum"]["y"].Value<double>(); // MeV
+        auto pz = block["momentum"]["z"].Value<double>(); // MeV
         G4ThreeVector position( x,  y,  z);
         G4ThreeVector momentum(px, py, pz);
         generator = new LinearMuonBeam(position, momentum);
