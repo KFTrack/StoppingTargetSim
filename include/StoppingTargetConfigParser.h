@@ -16,6 +16,7 @@
 #include <G4Tubs.hh>
 #include <G4Sphere.hh>
 #include <G4Element.hh>
+#include <CLHEP/Units/PhysicalConstants.h>
 
 #include <YamlParser.h>
 #include <unordered_map>
@@ -35,7 +36,8 @@ class StoppingTargetConfigParser {
       
       G4VSolid* getVSolid(string shape, const YamlNode& parameters);
       G4LogicalVolume* getLogVolume(const YamlNode& param_node, G4VSolid* solid);
-      void placeSolid(const YamlNode& param_node, G4LogicalVolume* log_volume);
+      void placeSolid(const YamlNode& param_node, G4LogicalVolume* log_volume, G4RotationMatrix* rotMat);
+      G4RotationMatrix* getRotation(const YamlNode& param_node);
 
       // template<typename T>
       // T* constructor(const YamlNode& node);
