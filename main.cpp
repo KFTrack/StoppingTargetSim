@@ -119,7 +119,11 @@ int main(int argc, char** argv){
     else if (type == "PresampledMuonBeam"){
         auto path = block["path"].Value<string>();
         auto tree = block["tree"].Value<string>();
-        generator = new PresampledMuonBeam(path, tree);
+        auto ox = block["origin"]["x"].Value<float>();
+        auto oy = block["origin"]["y"].Value<float>();
+        auto oz = block["origin"]["z"].Value<float>();
+        auto vidx = block["volume_index"].Value<unsigned int>();
+        generator = new PresampledMuonBeam(path, tree, ox, oy, oz, vidx);
     }
     else{
         string msg = "unsupported generator: " + type;

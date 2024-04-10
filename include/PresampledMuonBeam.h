@@ -15,7 +15,9 @@
 
 class PresampledMuonBeam: public MuonBeam{
   public:
-    PresampledMuonBeam(std::string path, std::string key);
+    PresampledMuonBeam(std::string path, std::string key,
+                       float, float, float,
+                       unsigned int);
    ~PresampledMuonBeam();
 
     virtual void SampleMuonState();
@@ -23,6 +25,9 @@ class PresampledMuonBeam: public MuonBeam{
     TFile* file;
     TTree* tree;
     NtupleFields fields;
+
+    G4ThreeVector origin;
+    unsigned int volume_index;
 
     long entries;
     long sample_entry_number();
