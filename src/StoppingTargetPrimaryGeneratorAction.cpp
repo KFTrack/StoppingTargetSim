@@ -3,6 +3,7 @@
 // October 2023
 
 #include <StoppingTargetPrimaryGeneratorAction.h>
+using namespace std;
 
 StoppingTargetPrimaryGeneratorAction::StoppingTargetPrimaryGeneratorAction(){
     G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
@@ -29,5 +30,23 @@ StoppingTargetPrimaryGeneratorAction::~StoppingTargetPrimaryGeneratorAction(){
 
 // TODO eventually, this will update the gun before each shot
 void StoppingTargetPrimaryGeneratorAction::GeneratePrimaries(G4Event* event){
+    double newX, newY;
+    double r, theta;
+
+    double Rmin = 0.0215;
+    double Rmax = 0.075;
+
+    double Umin = pow(Rmin, 2) / 2;
+    double Umax = pow(Rmax, 2) / 2;
+
+    theta = G4UniformRand() * 2 * CLHEP::pi;
+    r = pow(2 * G4UniformRand() * (Umax - Umin) + Umin, 0.5);
+
+    newX = r * cos(theta) * CLHEP::m;
+    newY = r * sin(theta) * CLHEP::m;
+    // cout << newX << " " << newY << endl;
+    G4ThreeVector newPosition(newX, newY, 0.0 * CLHEP::m);
+    // randomly generate new position
+    this->gun->SetParticlePosition(newPosition);
     this->gun->GeneratePrimaryVertex(event);
 }
