@@ -4,16 +4,13 @@
 
 #include <StoppingTargetActionInitialization.h>
 
-StoppingTargetActionInitialization::StoppingTargetActionInitialization(){
-    /**/
+StoppingTargetActionInitialization::StoppingTargetActionInitialization(EventGenerator* generator, std::string opath){
+    this->generator = generator;
+    this->opath = opath;
 }
 
 StoppingTargetActionInitialization::~StoppingTargetActionInitialization(){
     /**/
-}
-
-StoppingTargetActionInitialization::StoppingTargetActionInitialization(std::string opath){
-    this->opath = opath;
 }
 
 void StoppingTargetActionInitialization::Build() const{
@@ -21,7 +18,8 @@ void StoppingTargetActionInitialization::Build() const{
 
     // G4VUserPrimaryGeneratorAction: specify primary particles
     // this->SetUserAction(G4VUserPrimaryGeneratorAction*);
-    auto generatorAction = new StoppingTargetPrimaryGeneratorAction();
+    auto generatorAction =
+        new StoppingTargetPrimaryGeneratorAction(this->generator);
     this->SetUserAction(generatorAction);
 
     // G4UserRunAction: begin-/end-of-run bookkeeping
