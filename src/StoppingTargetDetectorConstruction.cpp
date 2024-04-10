@@ -29,7 +29,7 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCustom(){
     auto parser = StoppingTargetConfigParser(world_log);
 
    for (auto child: detectorNode) {
-       cout << child << endl;
+    //    cout << child << endl;
        parser.CreateSolid(child);
    }
     
@@ -45,7 +45,13 @@ void StoppingTargetDetectorConstruction::CreateWorldLog(){
     // Move to detector construction
     double dim = _dim * CLHEP::m;
 
-    G4Material* world_material = nist->FindOrBuildMaterial("G4_AIR");
+    // Defining Vacuum (very lose density hydrogen)
+    double density = CLHEP::universe_mean_density; 
+    double pressure = 1.e-19*CLHEP::pascal;
+    double temperature = 0.1*CLHEP::kelvin;
+    new G4Material("Vacuum", 1., 1.01*CLHEP::g/CLHEP::mole, density, kStateGas, temperature, pressure); 
+
+    G4Material* world_material = nist->FindOrBuildMaterial("Vacuum");
     G4Box* world_solid = new G4Box("world", dim, dim, dim);
     
     world_log = new G4LogicalVolume(world_solid, world_material, "world"); 
