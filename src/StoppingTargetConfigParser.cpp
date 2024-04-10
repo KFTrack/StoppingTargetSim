@@ -20,13 +20,13 @@ G4VSolid* StoppingTargetConfigParser::getVSolid(string name, const YamlNode& par
 
     // change to switch statement
     if (name == "box") {
-        cout << "box" << endl;
+        // cout << "box" << endl;
         rv = constructorBoxVSolid(params);
     } else if(name == "sphere") {
-        cout << "sphere" << endl;
+        // cout << "sphere" << endl;
         rv = constructorSphereVSolid(params);
     } else if(name == "tube") {
-        cout << "tube" << endl;
+        // cout << "tube" << endl;
         rv = constructorTubsVSolid(params);
     }
 
@@ -90,8 +90,8 @@ G4LogicalVolume* StoppingTargetConfigParser::getLogVolume(const YamlNode& param_
 
     G4Material* env_mat = new G4Material("Custom Aluminum", 13.00, 26.981539, density=density);
 
-    cout << "MATERIAL FOR BOX SYNTHETIC: " << env_mat << endl;
-    cout << "MATERIAL FOR BOX REAL: " << material << endl;
+    // cout << "MATERIAL FOR BOX SYNTHETIC: " << env_mat << endl;
+    // cout << "MATERIAL FOR BOX REAL: " << material << endl;
     
     rv = new G4LogicalVolume(solid, env_mat, name);
     return rv;
@@ -129,7 +129,7 @@ G4RotationMatrix* StoppingTargetConfigParser::getRotation(const YamlNode& param_
 
 void StoppingTargetConfigParser::CreateSolid(const YamlNode& config) {
     YamlNode node = YamlNode(config);
-    cout << node << endl;
+    // cout << node << endl;
 
     // int pos = node["position"].Value<int>();
     string material = node["material"].Value<string>();
