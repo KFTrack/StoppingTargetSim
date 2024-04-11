@@ -10,12 +10,12 @@
 #include <StoppingTargetPrimaryGeneratorAction.h>
 #include <TrackBookkeeper.h>
 #include <NtupleTrackingSink.h>
+#include <EventGenerator.h>
 
 class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   public:
-    StoppingTargetActionInitialization();
+    StoppingTargetActionInitialization(EventGenerator* generator, std::string opath);
    ~StoppingTargetActionInitialization();
-    StoppingTargetActionInitialization(std::string opath);
 
     // instantiate / register subclasses of the following:
     // G4VUserPrimaryGeneratorAction: specify primary particles
@@ -27,6 +27,7 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
     void Build() const;
   protected:
     std::string opath;
+    EventGenerator* generator;
   private:
   	/**/
 };

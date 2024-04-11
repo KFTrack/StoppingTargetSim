@@ -5,6 +5,7 @@
 // systemwide
 #include <unistd.h>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 // yaml parser
@@ -27,6 +28,9 @@
 #include <StoppingTargetActionInitialization.h>
 #include <StoppingTargetDetectorConstruction.h>
 //#include <StoppingTargetPhysicsList.h>
+
+#include <LinearMuonBeam.h>
+#include <PresampledMuonBeam.h>
 
 using namespace std;
 
@@ -89,17 +93,44 @@ int main(int argc, char** argv){
     TApplication app("TApplication", 0, NULL);
 
     // instantiate run manager
-    // TODO details of initializations and geometries from config
     auto manager = G4RunManagerFactory::CreateRunManager();
+
+    // physics list
 //  manager->SetUserInitialization(new StoppingTargetPhysicsList);
     auto plf = G4PhysListFactory();
     auto list = plf.GetReferencePhysList("FTFP_BERT");
     manager->SetUserInitialization(list);
-    auto stai = new StoppingTargetActionInitialization(opath);
+
+    // primary generator
+    EventGenerator* generator;
+    auto block = config["generator"];
+    auto type = block["type"].Value<string>();
+    if (type == "LinearMuonBeam"){
+        auto  x = block["position"]["x"].Value<double>(); // mm
+        auto  y = block["position"]["y"].Value<double>(); // mm
+        auto  z = block["position"]["z"].Value<double>(); // mm
+        auto px = block["momentum"]["x"].Value<double>(); // MeV
+        auto py = block["momentum"]["y"].Value<double>(); // MeV
+        auto pz = block["momentum"]["z"].Value<double>(); // MeV
+        G4ThreeVector position( x,  y,  z);
+        G4ThreeVector momentum(px, py, pz);
+        generator = new LinearMuonBeam(position, momentum);
+    }
+    else if (type == "PresampledMuonBeam"){
+        auto path = block["path"].Value<string>();
+        auto tree = block["tree"].Value<string>();
+        generator = new PresampledMuonBeam(path, tree);
+    }
+    else{
+        string msg = "unsupported generator: " + type;
+        throw runtime_error(msg);
+    }
+    auto stai = new StoppingTargetActionInitialization(generator, opath);
     manager->SetUserInitialization(stai);
     auto stdc = new StoppingTargetDetectorConstruction(config["detector"]);
     manager->SetUserInitialization(stdc);
 
+    // enact initialization
     manager->Initialize();
 
     // run simulation

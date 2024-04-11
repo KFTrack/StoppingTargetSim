@@ -17,15 +17,16 @@
 
 #define G4UniformRand() CLHEP::HepRandom::getTheEngine()->flat()
 
+#include <EventGenerator.h>
+
 class StoppingTargetPrimaryGeneratorAction: public G4VUserPrimaryGeneratorAction{
   public:
-    StoppingTargetPrimaryGeneratorAction();
+    StoppingTargetPrimaryGeneratorAction(EventGenerator* generator);
    ~StoppingTargetPrimaryGeneratorAction();
 
     virtual void GeneratePrimaries(G4Event*);
   protected:
-  	/**/
-    G4ParticleGun* gun;
+    EventGenerator* generator;
   private:
   	/**/
 };
