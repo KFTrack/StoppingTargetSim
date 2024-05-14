@@ -22,5 +22,11 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::Construct(){
     G4VPhysicalVolume* world_phys = new G4PVPlacement(0, origin, world_log, "world", NULL, false, 0);
 
     G4VPhysicalVolume* rv = world_phys;
+    this->world = world_log;
+    return rv;
+}
+
+G4LogicalVolume* StoppingTargetDetectorConstruction::GetWorld(){
+    auto rv = this->world;
     return rv;
 }

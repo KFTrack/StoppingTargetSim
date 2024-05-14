@@ -20,8 +20,9 @@ class StoppingTargetDetectorConstruction: public G4VUserDetectorConstruction{
    ~StoppingTargetDetectorConstruction();
 
     G4VPhysicalVolume* Construct();
+    G4LogicalVolume* GetWorld();
   protected:
-    /**/
+    G4LogicalVolume* world;
   private:
     /**/
 };

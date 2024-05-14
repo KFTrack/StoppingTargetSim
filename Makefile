@@ -13,6 +13,7 @@ CPPFLAGS	:= $(CPPFLAGS) -I$(RYML_DIR)/include
 LDFLAGS		:= $(LDFLAGS) $(shell geant4-config --libs)
 LDFLAGS		:= $(LDFLAGS) $(shell root-config --libs)
 LDFLAGS		:= $(LDFLAGS) -L$(RYML_DIR)/lib -lryml
+LDFLAGS		:= $(LDFLAGS) $(shell pkg-config --libs xerces-c)
 
 SRCDIR		:= ./src
 OBJDIR		:= ./build
