@@ -112,11 +112,17 @@ void StoppingTargetConfigParser::placeSolid(const YamlNode& param_node, G4Logica
 }
 
 G4RotationMatrix* StoppingTargetConfigParser::getRotation(const YamlNode& param_node) {
-    YamlNode node = YamlNode(param_node)["rotation"];
+    double x_ang = 0, y_ang = 0, z_ang = 0;
 
-    double x_ang = node["x"].Value<double>() * CLHEP::deg;
-    double y_ang = node["y"].Value<double>() * CLHEP::deg;
-    double z_ang = node["z"].Value<double>() * CLHEP::deg;
+    YamlNode params = YamlNode(param_node);
+    
+    if (params.has_child("rotation")) {
+        YamlNode node = params["rotation"];
+
+        x_ang = node["x"].Value<double>() * CLHEP::deg;
+        y_ang = node["y"].Value<double>() * CLHEP::deg;
+        z_ang = node["z"].Value<double>() * CLHEP::deg;
+    }
 
     G4RotationMatrix* rot = new G4RotationMatrix;
 
@@ -141,5 +147,4 @@ void StoppingTargetConfigParser::CreateSolid(const YamlNode& config) {
     G4LogicalVolume* log_volume = getLogVolume(node, solid);
     G4RotationMatrix* rot = getRotation(node);
     placeSolid(node, log_volume, rot);
-
 }
