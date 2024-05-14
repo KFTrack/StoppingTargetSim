@@ -52,9 +52,21 @@ void StoppingTargetDetectorConstruction::CreateWorldLog(){
     new G4Material("Vacuum", 1., 1.01*CLHEP::g/CLHEP::mole, density, kStateGas, temperature, pressure); 
 
     G4Material* world_material = nist->FindOrBuildMaterial("Vacuum");
+    // G4Material* world_material = nist->FindOrBuildMaterial("G4_AIR");
     G4Box* world_solid = new G4Box("world", dim, dim, dim);
     
     world_log = new G4LogicalVolume(world_solid, world_material, "world"); 
+}
+
+void StoppingTargetDetectorConstruction::ConstructSDAndField() {
+    auto tm = G4TransportationManager::GetTransportationManager();
+    G4FieldManager* globalFieldManager = tm->GetFieldManager();
+    
+    // G4MagneticField* magField = new G4UniformMagField(G4ThreeVector(0., 0., 1.5*CLHEP::tesla));
+    MagneticField* magField = new MagneticField();
+
+    globalFieldManager->SetDetectorField(magField);
+    globalFieldManager->CreateChordFinder(magField);
 }
 
 G4VPhysicalVolume* StoppingTargetDetectorConstruction::Construct(){
@@ -79,5 +91,6 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::Construct(){
     // return rv;
 
     G4VPhysicalVolume* rv = ConstructCustom();
+    ConstructSDAndField();
     return rv;
 }

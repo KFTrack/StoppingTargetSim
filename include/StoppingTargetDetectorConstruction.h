@@ -15,6 +15,11 @@
 #include <G4PVPlacement.hh>
 #include <G4VPhysicalVolume.hh>
 #include <G4Tubs.hh>
+#include <G4MagneticField.hh>
+#include <MagneticField.h>
+#include <G4UniformMagField.hh>
+#include <G4TransportationManager.hh>
+#include <G4FieldManager.hh>
 
 // Other libraries
 #include <YamlParser.h>
@@ -28,6 +33,7 @@ class StoppingTargetDetectorConstruction: public G4VUserDetectorConstruction{
 
     void CreateWorldLog();
     G4VPhysicalVolume* ConstructCustom();
+    void ConstructSDAndField(); 
     G4VPhysicalVolume* Construct();
   protected:
     /**/
