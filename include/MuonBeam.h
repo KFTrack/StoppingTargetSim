@@ -7,7 +7,8 @@
 
 // G4 includes
 #include <G4ParticleTable.hh>
-#include <G4ParticleGun.hh>
+// #include <G4ParticleGun.hh>
+#include <ParticleGun.h>
 
 // other
 #include <EventGenerator.h>
@@ -22,7 +23,8 @@ class MuonBeam: public EventGenerator{
     // override this to sample new position/momentum, and store in members
     virtual void SampleMuonState() = 0;
   protected:
-    G4ParticleGun* gun;
+    // G4ParticleGun* gun;
+    ParticleGun* gun;
     G4ThreeVector position;
     G4ThreeVector momentum;
   private:
