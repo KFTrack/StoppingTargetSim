@@ -17,6 +17,7 @@
 #include <TApplication.h>
 
 // G4 includes
+#include <G4GDMLParser.hh>
 #include <G4PhysListFactory.hh>
 #include <G4RunManagerFactory.hh>
 #include <G4UIExecutive.hh>
@@ -160,6 +161,13 @@ int main(int argc, char** argv){
         visMgr = new G4VisExecutive();
         visMgr->Initialize();
     }
+
+    if (config.has_child("gdml")){
+        auto path = config["gdml"].Value<string>();
+        G4GDMLParser gdml;
+        gdml.Write(path, stdc->GetWorld());
+    }
+
 
     // execute generic G4 commands; really, this should only be used for
     // visualization or playing around

@@ -35,8 +35,9 @@ class StoppingTargetDetectorConstruction: public G4VUserDetectorConstruction{
     G4VPhysicalVolume* ConstructCustom();
     void ConstructSDAndField(); 
     G4VPhysicalVolume* Construct();
+    G4LogicalVolume* GetWorld();
   protected:
-    /**/
+    G4LogicalVolume* world;
   private:
     G4LogicalVolume* world_log;
     YamlNode parameters;
