@@ -32,6 +32,7 @@
 
 #include <LinearMuonBeam.h>
 #include <PresampledMuonBeam.h>
+#include <MonoenergeticElectronsInVolume.h>
 
 using namespace std;
 
@@ -126,6 +127,11 @@ int main(int argc, char** argv){
         auto vidx = block["volume_index"].Value<unsigned int>();
         generator = new PresampledMuonBeam(path, tree, ox, oy, oz, vidx);
     }
+    else if (type == "MonoenergeticElectronsInVolume"){
+        auto energy = block["energy"].Value<double>();
+        auto volume = block["volume"].Value<string>();
+        generator = new MonoenergeticElectronsInVolume(energy, volume);
+    }
     else{
         string msg = "unsupported generator: " + type;
         throw runtime_error(msg);
@@ -156,7 +162,6 @@ int main(int argc, char** argv){
         G4GDMLParser gdml;
         gdml.Write(path, stdc->GetWorld());
     }
-
 
     // execute generic G4 commands; really, this should only be used for
     // visualization or playing around
