@@ -41,9 +41,10 @@ void MonoenergeticElectronsInVolume::SampleElectronState(){
         double y = this->ymin + uy * (this->ymax - this->ymin);
         double z = this->zmin + uz * (this->zmax - this->zmin);
         G4ThreeVector candidate(x, y, z);
+        this->global.ApplyPointTransform(candidate);
         G4VPhysicalVolume* lowest = this->navigator->LocateGlobalPointAndSetup(candidate, nullptr, false, true);
-        G4LogicalVolume* logical = lowest->GetLogicalVolume();
-        if ((lowest == this->volume) || (logical->IsAncestor(this->volume))){
+        G4LogicalVolume* logical = this->volume->GetLogicalVolume();
+        if ((lowest == this->volume) || (logical->IsAncestor(lowest))){
             this->position = candidate;
             stop = true;
         }
