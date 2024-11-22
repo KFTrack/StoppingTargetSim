@@ -92,7 +92,7 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::Construct(){
 
     G4VPhysicalVolume* rv = ConstructCustom();
     ConstructSDAndField();
-    G4VPhysicalVolume* rv = world_phys;
+    // G4VPhysicalVolume* rv = world_phys;
     this->world = world_log;
     return rv;
 }

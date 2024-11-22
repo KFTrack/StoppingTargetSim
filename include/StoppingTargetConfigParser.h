@@ -15,8 +15,16 @@
 #include <G4VPhysicalVolume.hh>
 #include <G4Tubs.hh>
 #include <G4Sphere.hh>
+#include <G4Trap.hh>
+#include <G4ExtrudedSolid.hh>
 #include <G4Element.hh>
 #include <CLHEP/Units/PhysicalConstants.h>
+#include <G4Pow.hh>
+#include <G4BooleanSolid.hh>
+#include <G4UnionSolid.hh>
+#include <G4MultiUnion.hh>
+#include <G4TessellatedSolid.hh>
+#include <G4TriangularFacet.hh>
 
 #include <YamlParser.h>
 #include <unordered_map>
@@ -45,6 +53,8 @@ class StoppingTargetConfigParser {
       G4VSolid* constructorBoxVSolid(const YamlNode& paramNode);
       G4VSolid* constructorSphereVSolid(const YamlNode& paramNode);
       G4VSolid* constructorTubsVSolid(const YamlNode& paramNode);
-
+      G4VSolid* constructorBoundedPlane(const YamlNode& paramNode);
+      G4VSolid* constructorTriangularPlane(G4ThreeVector a1, G4ThreeVector a2, G4ThreeVector b1, double thickness);
+      void CalculateBasisAndRotation(G4ThreeVector a, G4ThreeVector b, G4ThreeVector c, G4RotationMatrix& rotation);
 
 };

@@ -28,6 +28,10 @@ G4VSolid* StoppingTargetConfigParser::getVSolid(string name, const YamlNode& par
     } else if(name == "tube") {
         // cout << "tube" << endl;
         rv = constructorTubsVSolid(params);
+    } else if(name == "custom") {
+        rv = constructorBoundedPlane(params);
+    } else {
+        // Error out
     }
 
     return rv;
@@ -77,6 +81,164 @@ G4VSolid* StoppingTargetConfigParser::constructorTubsVSolid(const YamlNode& para
     return rv;
 }
 
+G4VSolid* StoppingTargetConfigParser::constructorBoundedPlane(const YamlNode& paramNode) {
+    G4MultiUnion* combinedPrism = nullptr;
+    // G4TessellatedSolid* combinedPrism = new G4TessellatedSolid("CombinedSolid"); 
+    G4VSolid* rv = nullptr;
+    YamlNode params = YamlNode(paramNode);
+    double THICKNESS = 10 * CLHEP::mm; // [m]
+
+    cout << "bounded planes" << endl;
+
+    double ax1 = params["ax1"].Value<double>() * CLHEP::m;
+    double ay1 = params["ay1"].Value<double>() * CLHEP::m;
+    double az1 = params["az1"].Value<double>() * CLHEP::m;
+
+    double ax2 = params["ax2"].Value<double>() * CLHEP::m;
+    double ay2 = params["ay2"].Value<double>() * CLHEP::m;
+    double az2 = params["az2"].Value<double>() * CLHEP::m;
+
+    double bx1 = params["bx1"].Value<double>() * CLHEP::m;
+    double by1 = params["by1"].Value<double>() * CLHEP::m;
+    double bz1 = params["bz1"].Value<double>() * CLHEP::m;
+
+    double bx2 = params["bx2"].Value<double>() * CLHEP::m;
+    double by2 = params["by2"].Value<double>() * CLHEP::m;
+    double bz2 = params["bz2"].Value<double>() * CLHEP::m;
+
+    // Corners of triangle
+    G4ThreeVector a1(ax1, ay1, az1);
+    G4ThreeVector a2(ax2, ay2, az2);
+    G4ThreeVector b1(bx1, by1, bz1);
+    G4ThreeVector b2(bx2, by2, bz2);
+
+    G4VSolid* prism1 = constructorTriangularPlane(a1, a2, b1, THICKNESS);
+    G4VSolid* prism2 = constructorTriangularPlane(b1, b2, a2, THICKNESS);
+    // G4TriangularFacet *facet1 = new G4TriangularFacet(a1, a2, b1, ABSOLUTE);
+    // G4TriangularFacet *facet2 = new G4TriangularFacet(b1, b2, a2, ABSOLUTE);
+
+    G4ThreeVector translation1 = a1;
+    G4ThreeVector translation2 = b1-(0.001)*a1;
+    // G4ThreeVector relativeTranslate = b1 - a1;
+
+    G4RotationMatrix rotation1, rotation2;
+    rotation1 = G4RotationMatrix();
+    rotation2 = G4RotationMatrix();
+    CalculateBasisAndRotation(a1, a2, b1, rotation1);
+    CalculateBasisAndRotation(b1, b2, a2, rotation2);
+
+    // G4RotationMatrix* relativeRotation = rotation1->inverse() * rotation2;
+
+    G4Transform3D transform1(rotation1, translation1);
+    G4Transform3D transform2(rotation2, translation2);
+
+    // cout << "transform 1: " << translation1 << endl;
+    // cout << "transform 2: " << translation2 << endl;
+
+    // G4Transform3D relativeTransform(relativeRotation, relativeTranslate);
+
+    /** Need to work out logic for boolean solid */
+    // Combine prisms in each quadrilateral
+    // if (combinedPrism == nullptr) {
+    //     combinedPrism = new G4UnionSolid("CombinedPrism", prism1, prism2, transform2);
+    // } else {
+    //     combinedPrism = new G4UnionSolid("CombinedPrism", combinedPrism, prism1, transform1);
+    //     combinedPrism = new G4UnionSolid("CombinedPrism", combinedPrism, prism2, transform2);
+    // }
+
+    // use multiunion instead
+    // rotate normal -> z-axis using axis-angle representation 
+
+    combinedPrism = new G4MultiUnion("Triangles_Combined");
+    combinedPrism->AddNode(prism1, transform1);
+    combinedPrism->AddNode(prism2, transform2);
+
+    combinedPrism->Voxelize();
+
+    // combinedPrism->AddFacet((G4VFacet*) facet1);
+    // combinedPrism->AddFacet((G4VFacet*) facet2);
+    // combinedPrism->SetSolidClosed(true);
+
+    // rv = prism2;
+    rv = combinedPrism;
+    return rv;
+
+}
+
+void StoppingTargetConfigParser::CalculateBasisAndRotation(G4ThreeVector a, G4ThreeVector b, G4ThreeVector c, G4RotationMatrix& rotation) {
+    // G4RotationMatrix* rotation = new G4RotationMatrix;
+
+    G4ThreeVector AB = b-a;
+    G4ThreeVector AC = c-a;
+
+    G4ThreeVector N = AB.cross(AC); // Normal vector to the plane of the triangle
+    G4ThreeVector n = N.unit(); // Unit normal vector
+    G4ThreeVector u = AB.unit(); // Unit vector of one basis vector, ** The Privilaged Unit Vector **
+    G4ThreeVector V = n.cross(u); 
+    G4ThreeVector v = V.unit(); // 3rd orthogonal basis vector of the set (u, v, n)
+
+    rotation.rotateAxes(u, v, n);
+ 
+    // return rotation;
+    return;
+}
+
+G4VSolid* StoppingTargetConfigParser::constructorTriangularPlane(G4ThreeVector a1, G4ThreeVector a2, G4ThreeVector b1, double thickness) {
+    /** Triangular plane will be constructed using a1 as (0, 0) */
+
+    G4VSolid* rv = nullptr;
+    cout << "triangle" << endl;
+
+    // Define coordinates relative to a1. Making a = (0, 0, 0)
+    G4ThreeVector a(0, 0, 0);
+    G4ThreeVector b = a2 - a1;
+    G4ThreeVector c = b1 - a1;
+
+    // Privilaged vector AB will be our reference 
+    G4ThreeVector AB = b;  // a -> b or a1 -> a2
+    G4ThreeVector AC = c; // a -> c or a1 -> b1
+
+    // Construct orthogonal basis from triangle
+    G4ThreeVector N = AB.cross(AC); // Normal vector to the plane of the triangle
+    G4ThreeVector n = N.unit(); // Unit normal vector
+    G4ThreeVector u = AB.unit(); // Unit vector of one basis vector, ** The Privilaged Unit Vector **
+    G4ThreeVector V = n.cross(u); 
+    G4ThreeVector v = V.unit(); // 3rd orthogonal basis vector of the set (u, v, n)
+
+    // Construct triangle in 2D plane
+    std::vector<G4TwoVector> triangle(3);
+    triangle[0] = G4TwoVector(a.dot(u), a.dot(v));
+    triangle[1] = G4TwoVector(b.dot(u), b.dot(v));    
+    triangle[2] = G4TwoVector(c.dot(u), c.dot(v));
+
+    cout << "a: " << a << endl;
+    cout << "b: " << b << endl;
+    cout << "c: " << c << endl;
+
+    cout << "u: " << u << endl;
+    cout << "v: " << v << endl;
+    cout << "n: " << n << endl;
+
+    cout << "triangle 1: " << triangle[0] << endl;
+    cout << "triangle 2: " << triangle[1] << endl;
+    cout << "triangle 3: " << triangle[2] << endl;
+
+    cout << "\n" << endl;
+
+    rv = new G4ExtrudedSolid("Prism", triangle, thickness/2, G4TwoVector(0,0), 1., G4TwoVector(0,0), 1.);
+
+
+    // // Determine rotation required about v-axis to go from 2d space into 3d
+    // G4ThreeVector a_prime = G4TwoVector(a.dot(u), a.dot(v), 0);
+    // G4ThreeVector b_prime = G4TwoVector(b.dot(u), b.dot(v), 0);
+    // G4ThreeVector c_prime = G4TwoVector(c.dot(u), c.dot(v), 0);
+
+    // define a privilages point and side as our reference side (p4esoint a and side x = ab).
+    // when we place our original triangle into a 2d basis, we have a -> a' , x -> x' (side a'b')
+    // we define a' = (0, 0, 0). translation is as simple as moving to where a is located
+    // rotation is defined by determining a.dot(a') and rotating about x.cross(x') up to a sign
+    return rv;
+}
 
 G4LogicalVolume* StoppingTargetConfigParser::getLogVolume(const YamlNode& param_node, G4VSolid* solid) {
     G4LogicalVolume* rv = nullptr;
@@ -144,7 +306,11 @@ void StoppingTargetConfigParser::CreateSolid(const YamlNode& config) {
     printf("type: %s, material: %s\n", type_str.c_str(), material.c_str());
 
     G4VSolid* solid = getVSolid(type_str, node["parameters"]);
+    cout << "got solid" << endl;
     G4LogicalVolume* log_volume = getLogVolume(node, solid);
+    cout << "fin log vol" << endl;
     G4RotationMatrix* rot = getRotation(node);
+    cout << "fin rot" << endl;
     placeSolid(node, log_volume, rot);
+    cout << "placed solid" << endl;
 }
