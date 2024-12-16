@@ -90,79 +90,71 @@ G4VSolid* StoppingTargetConfigParser::constructorBoundedPlane(const YamlNode& pa
 
     cout << "bounded planes" << endl;
 
-    double ax1 = params["ax1"].Value<double>() * CLHEP::m;
-    double ay1 = params["ay1"].Value<double>() * CLHEP::m;
-    double az1 = params["az1"].Value<double>() * CLHEP::m;
+    vector<G4ThreeVector> aPoints;
+    YamlNode aPointsList = params["a"];
+    LoadPoints(aPointsList, &aPoints);
 
-    double ax2 = params["ax2"].Value<double>() * CLHEP::m;
-    double ay2 = params["ay2"].Value<double>() * CLHEP::m;
-    double az2 = params["az2"].Value<double>() * CLHEP::m;
+    vector<G4ThreeVector> bPoints;
+    YamlNode bPointsList = params["b"];
+    LoadPoints(bPointsList, &bPoints);
 
-    double bx1 = params["bx1"].Value<double>() * CLHEP::m;
-    double by1 = params["by1"].Value<double>() * CLHEP::m;
-    double bz1 = params["bz1"].Value<double>() * CLHEP::m;
-
-    double bx2 = params["bx2"].Value<double>() * CLHEP::m;
-    double by2 = params["by2"].Value<double>() * CLHEP::m;
-    double bz2 = params["bz2"].Value<double>() * CLHEP::m;
+    int numPoints = aPoints.size();
 
     // Corners of triangle
-    G4ThreeVector a1(ax1, ay1, az1);
-    G4ThreeVector a2(ax2, ay2, az2);
-    G4ThreeVector b1(bx1, by1, bz1);
-    G4ThreeVector b2(bx2, by2, bz2);
-
-    G4VSolid* prism1 = constructorTriangularPlane(a1, a2, b1, THICKNESS);
-    G4VSolid* prism2 = constructorTriangularPlane(b1, b2, a2, THICKNESS);
-    // G4TriangularFacet *facet1 = new G4TriangularFacet(a1, a2, b1, ABSOLUTE);
-    // G4TriangularFacet *facet2 = new G4TriangularFacet(b1, b2, a2, ABSOLUTE);
-
-    G4ThreeVector translation1 = a1;
-    G4ThreeVector translation2 = b1-(0.001)*a1;
-    // G4ThreeVector relativeTranslate = b1 - a1;
-
+    G4ThreeVector a1, a2, b1, b2;
+    G4ThreeVector translation1, translation2;
     G4RotationMatrix rotation1, rotation2;
-    rotation1 = G4RotationMatrix();
-    rotation2 = G4RotationMatrix();
-    CalculateBasisAndRotation(a1, a2, b1, rotation1);
-    CalculateBasisAndRotation(b1, b2, a2, rotation2);
-
-    // G4RotationMatrix* relativeRotation = rotation1->inverse() * rotation2;
-
-    G4Transform3D transform1(rotation1, translation1);
-    G4Transform3D transform2(rotation2, translation2);
-
-    // cout << "transform 1: " << translation1 << endl;
-    // cout << "transform 2: " << translation2 << endl;
-
-    // G4Transform3D relativeTransform(relativeRotation, relativeTranslate);
-
-    /** Need to work out logic for boolean solid */
-    // Combine prisms in each quadrilateral
-    // if (combinedPrism == nullptr) {
-    //     combinedPrism = new G4UnionSolid("CombinedPrism", prism1, prism2, transform2);
-    // } else {
-    //     combinedPrism = new G4UnionSolid("CombinedPrism", combinedPrism, prism1, transform1);
-    //     combinedPrism = new G4UnionSolid("CombinedPrism", combinedPrism, prism2, transform2);
-    // }
-
-    // use multiunion instead
-    // rotate normal -> z-axis using axis-angle representation 
+    G4Transform3D transform1, transform2;
 
     combinedPrism = new G4MultiUnion("Triangles_Combined");
-    combinedPrism->AddNode(prism1, transform1);
-    combinedPrism->AddNode(prism2, transform2);
+
+    for (int i = 0; i < numPoints-1; i++) {
+        a1 = aPoints.at(i);
+        a2 = aPoints.at(i+1);
+        b1 = bPoints.at(i);
+        b2 = bPoints.at(i+1);
+
+        G4VSolid* prism1 = constructorTriangularPlane(a1, a2, b1, THICKNESS);
+        G4VSolid* prism2 = constructorTriangularPlane(b1, b2, a2, THICKNESS);
+
+        translation1 = a1-G4ThreeVector(0.0001, 0.0001, 0.0001);
+        translation2 = b1-(0.001)*a1;
+
+        rotation1 = G4RotationMatrix();
+        rotation2 = G4RotationMatrix();
+        CalculateBasisAndRotation(a1, a2, b1, rotation1);
+        CalculateBasisAndRotation(b1, b2, a2, rotation2);
+
+        transform1 = G4Transform3D(rotation1, translation1);
+        transform2 = G4Transform3D(rotation2, translation2);
+
+        combinedPrism->AddNode(prism1, transform1);
+        combinedPrism->AddNode(prism2, transform2);
+    }
 
     combinedPrism->Voxelize();
 
-    // combinedPrism->AddFacet((G4VFacet*) facet1);
-    // combinedPrism->AddFacet((G4VFacet*) facet2);
-    // combinedPrism->SetSolidClosed(true);
-
-    // rv = prism2;
     rv = combinedPrism;
     return rv;
 
+}
+
+void StoppingTargetConfigParser::LoadPoints(const YamlNode& pointsNode, vector<G4ThreeVector>* pointsList) {
+    YamlNode points = YamlNode(pointsNode);
+    G4ThreeVector curPoint;
+
+    double x, y, z;
+    string xFmt, yFmt, zFmt;
+
+    for (auto point: points) {
+        cout << point << endl;
+        x = YamlNode(point[0]).Value<double>() * CLHEP::m;
+        y = YamlNode(point[1]).Value<double>() * CLHEP::m;
+        z = YamlNode(point[2]).Value<double>() * CLHEP::m;
+
+        curPoint = G4ThreeVector(x, y, z);
+        pointsList->insert(pointsList->begin(), curPoint);
+    }
 }
 
 void StoppingTargetConfigParser::CalculateBasisAndRotation(G4ThreeVector a, G4ThreeVector b, G4ThreeVector c, G4RotationMatrix& rotation) {

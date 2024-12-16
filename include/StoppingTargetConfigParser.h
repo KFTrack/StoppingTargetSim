@@ -56,5 +56,6 @@ class StoppingTargetConfigParser {
       G4VSolid* constructorBoundedPlane(const YamlNode& paramNode);
       G4VSolid* constructorTriangularPlane(G4ThreeVector a1, G4ThreeVector a2, G4ThreeVector b1, double thickness);
       void CalculateBasisAndRotation(G4ThreeVector a, G4ThreeVector b, G4ThreeVector c, G4RotationMatrix& rotation);
+      void LoadPoints(const YamlNode& pointsNode, vector<G4ThreeVector>* pointsList);
 
 };
