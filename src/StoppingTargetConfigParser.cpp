@@ -83,10 +83,13 @@ G4VSolid* StoppingTargetConfigParser::constructorTubsVSolid(const YamlNode& para
 
 G4VSolid* StoppingTargetConfigParser::constructorBoundedPlane(const YamlNode& paramNode) {
     G4MultiUnion* combinedPrism = nullptr;
-    // G4TessellatedSolid* combinedPrism = new G4TessellatedSolid("CombinedSolid"); 
     G4VSolid* rv = nullptr;
     YamlNode params = YamlNode(paramNode);
-    double THICKNESS = 10 * CLHEP::mm; // [m]
+
+    double thickness = 10 * CLHEP::mm; // Default thickness unless otherwise specified
+    if(params.has_child("pThickness")) {
+        thickness = params["pThickness"].Value<double>() * CLHEP::mm;
+    }
 
     cout << "bounded planes" << endl;
 
@@ -114,8 +117,8 @@ G4VSolid* StoppingTargetConfigParser::constructorBoundedPlane(const YamlNode& pa
         b1 = bPoints.at(i);
         b2 = bPoints.at(i+1);
 
-        G4VSolid* prism1 = constructorTriangularPlane(a1, a2, b1, THICKNESS);
-        G4VSolid* prism2 = constructorTriangularPlane(b1, b2, a2, THICKNESS);
+        G4VSolid* prism1 = constructorTriangularPlane(a1, a2, b1, thickness);
+        G4VSolid* prism2 = constructorTriangularPlane(b1, b2, a2, thickness);
 
         translation1 = a1-G4ThreeVector(0.0001, 0.0001, 0.0001);
         translation2 = b1-(0.001)*a1;
@@ -144,7 +147,6 @@ void StoppingTargetConfigParser::LoadPoints(const YamlNode& pointsNode, vector<G
     G4ThreeVector curPoint;
 
     double x, y, z;
-    string xFmt, yFmt, zFmt;
 
     for (auto point: points) {
         cout << point << endl;
