@@ -33,6 +33,7 @@
 #include <LinearMuonBeam.h>
 #include <PresampledMuonBeam.h>
 #include <MonoenergeticElectronsInVolume.h>
+#include <MonoenergeticElectronsInVolumes.h>
 
 using namespace std;
 
@@ -131,6 +132,16 @@ int main(int argc, char** argv){
         auto energy = block["energy"].Value<double>();
         auto volume = block["volume"].Value<string>();
         generator = new MonoenergeticElectronsInVolume(energy, volume);
+    }
+    else if (type == "MonoenergeticElectronsInVolumes"){
+        auto energy = block["energy"].Value<double>();
+        std::vector<std::string> volumes;
+        const auto& sequence = block["volumes"];
+        for (const auto node: sequence){
+          auto volume = YamlNode(node).Value<string>();
+          volumes.push_back(volume);
+        }
+        generator = new MonoenergeticElectronsInVolumes(energy, volumes);
     }
     else{
         string msg = "unsupported generator: " + type;

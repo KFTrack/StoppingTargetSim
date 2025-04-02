@@ -23,6 +23,10 @@ MonoenergeticElectronsInVolume::MonoenergeticElectronsInVolume(double energy,
     this->momentum_magnitude = pow(pow(this->energy, 2) - pow(mass, 2), 0.5);
 }
 
+MonoenergeticElectronsInVolume::~MonoenergeticElectronsInVolume(){
+  /**/
+}
+
 void MonoenergeticElectronsInVolume::SampleElectronState(){
     // first, initialize G4Volume info, if necessary...
     if (!initialized){
@@ -86,8 +90,8 @@ void MonoenergeticElectronsInVolume::initialize_volume_fields(){
     G4VPhysicalVolume* current = this->volume;
     while (current != world){
         // TODO GetFrame* or GetObject*
-        auto rotation = current->GetFrameRotation();
-        auto translation = current->GetFrameTranslation();
+        auto rotation = current->GetObjectRotation();
+        auto translation = current->GetObjectTranslation();
         G4AffineTransform tmp(rotation, translation);
         this->global *= tmp;
         current = store->GetVolume(current->GetMotherLogical()->GetName());
