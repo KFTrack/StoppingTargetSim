@@ -11,10 +11,13 @@ MagneticField::~MagneticField() {};
 
 void MagneticField::GetFieldValue(const G4double point[4], G4double *bField) const
 {
-    G4double fBz = 0;
+    G4double fBz = 2;
 
-    if ((point[2] >= 0) && (point[2] < 2*CLHEP::m)) {
-        fBz = 2 - (point[2] * 0.0005);
+    G4double length = 5.2969 * CLHEP::m;
+    G4double gradient = -1 / length;
+
+    if ((point[2] >= 0) && (point[2] < length)) {
+        fBz = 2 + (point[2] * gradient);
     }
 
     bField[0] = 0;
