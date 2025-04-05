@@ -86,9 +86,9 @@ G4VSolid* StoppingTargetConfigParser::constructorBoundedPlane(const YamlNode& pa
     G4VSolid* rv = nullptr;
     YamlNode params = YamlNode(paramNode);
 
-    double thickness = 10 * CLHEP::mm; // Default thickness unless otherwise specified
+    double thickness = .010 * CLHEP::m; // Default thickness unless otherwise specified
     if(params.has_child("pThickness")) {
-        thickness = params["pThickness"].Value<double>() * CLHEP::mm;
+        thickness = params["pThickness"].Value<double>() * CLHEP::m;
     }
 
     cout << "bounded planes" << endl;
@@ -149,7 +149,7 @@ void StoppingTargetConfigParser::LoadPoints(const YamlNode& pointsNode, vector<G
     double x, y, z;
 
     for (auto point: points) {
-        cout << point << endl;
+        // cout << point << endl;
         x = YamlNode(point[0]).Value<double>() * CLHEP::m;
         y = YamlNode(point[1]).Value<double>() * CLHEP::m;
         z = YamlNode(point[2]).Value<double>() * CLHEP::m;
@@ -181,7 +181,7 @@ G4VSolid* StoppingTargetConfigParser::constructorTriangularPlane(G4ThreeVector a
     /** Triangular plane will be constructed using a1 as (0, 0) */
 
     G4VSolid* rv = nullptr;
-    cout << "triangle" << endl;
+    // cout << "triangle" << endl;
 
     // Define coordinates relative to a1. Making a = (0, 0, 0)
     G4ThreeVector a(0, 0, 0);
@@ -205,19 +205,19 @@ G4VSolid* StoppingTargetConfigParser::constructorTriangularPlane(G4ThreeVector a
     triangle[1] = G4TwoVector(b.dot(u), b.dot(v));    
     triangle[2] = G4TwoVector(c.dot(u), c.dot(v));
 
-    cout << "a: " << a << endl;
-    cout << "b: " << b << endl;
-    cout << "c: " << c << endl;
+    // cout << "a: " << a << endl;
+    // cout << "b: " << b << endl;
+    // cout << "c: " << c << endl;
 
-    cout << "u: " << u << endl;
-    cout << "v: " << v << endl;
-    cout << "n: " << n << endl;
+    // cout << "u: " << u << endl;
+    // cout << "v: " << v << endl;
+    // cout << "n: " << n << endl;
 
-    cout << "triangle 1: " << triangle[0] << endl;
-    cout << "triangle 2: " << triangle[1] << endl;
-    cout << "triangle 3: " << triangle[2] << endl;
+    // cout << "triangle 1: " << triangle[0] << endl;
+    // cout << "triangle 2: " << triangle[1] << endl;
+    // cout << "triangle 3: " << triangle[2] << endl;
 
-    cout << "\n" << endl;
+    // cout << "\n" << endl;
 
     rv = new G4ExtrudedSolid("Prism", triangle, thickness/2, G4TwoVector(0,0), 1., G4TwoVector(0,0), 1.);
 
@@ -239,7 +239,7 @@ G4LogicalVolume* StoppingTargetConfigParser::getLogVolume(const YamlNode& param_
     YamlNode node = YamlNode(param_node);
 
     string mat_str = node["material"].Value<string>();
-    string name = node["type"].Value<string>();
+    string name = node["parameters"]["pName"].Value<string>();
     double density = node["density"].Value<double>()  * CLHEP::g / CLHEP::cm3;
 
     G4Material* material = nist->FindOrBuildMaterial(mat_str);
