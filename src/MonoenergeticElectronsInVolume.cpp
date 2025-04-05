@@ -23,6 +23,10 @@ MonoenergeticElectronsInVolume::MonoenergeticElectronsInVolume(double energy,
     this->momentum_magnitude = pow(pow(this->energy, 2) - pow(mass, 2), 0.5);
 }
 
+MonoenergeticElectronsInVolume::~MonoenergeticElectronsInVolume(){
+  /**/
+}
+
 void MonoenergeticElectronsInVolume::SampleElectronState(){
     // first, initialize G4Volume info, if necessary...
     if (!initialized){
