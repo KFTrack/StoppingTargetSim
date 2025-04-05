@@ -86,8 +86,8 @@ void MonoenergeticElectronsInVolume::initialize_volume_fields(){
     G4VPhysicalVolume* current = this->volume;
     while (current != world){
         // TODO GetFrame* or GetObject*
-        auto rotation = current->GetFrameRotation();
-        auto translation = current->GetFrameTranslation();
+        auto rotation = current->GetObjectRotation();
+        auto translation = current->GetObjectTranslation();
         G4AffineTransform tmp(rotation, translation);
         this->global *= tmp;
         current = store->GetVolume(current->GetMotherLogical()->GetName());
