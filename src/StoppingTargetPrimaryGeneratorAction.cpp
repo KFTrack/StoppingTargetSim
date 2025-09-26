@@ -3,6 +3,7 @@
 // October 2023
 
 #include <StoppingTargetPrimaryGeneratorAction.h>
+using namespace std;
 
 StoppingTargetPrimaryGeneratorAction::StoppingTargetPrimaryGeneratorAction(EventGenerator* generator){
     this->generator = generator;

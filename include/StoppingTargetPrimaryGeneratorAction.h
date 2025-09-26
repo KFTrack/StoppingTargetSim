@@ -8,6 +8,14 @@
 #include <G4VUserPrimaryGeneratorAction.hh>
 #include <G4ParticleTable.hh>
 #include <G4ParticleGun.hh>
+#include <CLHEP/Random/RandFlat.h>
+#include <CLHEP/Random/RandomEngine.h>
+#include <CLHEP/Random/Random.h>
+#include <Randomize.hh>
+#include <CLHEP/Units/PhysicalConstants.h>
+#include <math.h>
+
+#define G4UniformRand() CLHEP::HepRandom::getTheEngine()->flat()
 
 #include <EventGenerator.h>
 

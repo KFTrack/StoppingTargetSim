@@ -29,9 +29,11 @@
 #include <StoppingTargetActionInitialization.h>
 #include <StoppingTargetDetectorConstruction.h>
 //#include <StoppingTargetPhysicsList.h>
+// #include <SteppingVerbose.h>
 
 #include <LinearMuonBeam.h>
 #include <PresampledMuonBeam.h>
+#include <PlanarMuonBeam.h>
 #include <MonoenergeticElectronsInVolume.h>
 #include <MonoenergeticElectronsInVolumes.h>
 
@@ -128,6 +130,17 @@ int main(int argc, char** argv){
         auto vidx = block["volume_index"].Value<unsigned int>();
         generator = new PresampledMuonBeam(path, tree, ox, oy, oz, vidx);
     }
+    else if (type == "PlanarMuonBeam"){
+        auto x = block["position"]["x"].Value<double>(); // mm 
+        auto y = block["position"]["y"].Value<double>(); // mm
+        auto z = block["position"]["z"].Value<double>(); // mm
+        auto px = block["momentum"]["x"].Value<double>(); // MeV
+        auto py = block["momentum"]["y"].Value<double>(); // MeV
+        auto pz = block["momentum"]["z"].Value<double>(); // MeV
+        G4ThreeVector position(x, y, z);
+        G4ThreeVector momentum(px, py, pz);
+        generator = new PlanarMuonBeam(position, momentum);
+    }
     else if (type == "MonoenergeticElectronsInVolume"){
         auto energy = block["energy"].Value<double>();
         auto volume = block["volume"].Value<string>();
@@ -149,9 +162,7 @@ int main(int argc, char** argv){
     }
     auto stai = new StoppingTargetActionInitialization(generator, opath);
     manager->SetUserInitialization(stai);
-
-    // geometry
-    auto stdc = new StoppingTargetDetectorConstruction();
+    auto stdc = new StoppingTargetDetectorConstruction(config["detector"]);
     manager->SetUserInitialization(stdc);
 
     // enact initialization
