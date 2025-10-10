@@ -7,6 +7,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <sys/stat.h>
 
 // yaml parser
 #include <YamlParser.h>
@@ -181,6 +182,9 @@ int main(int argc, char** argv){
 
     if (config.has_child("gdml")){
         auto path = config["gdml"].Value<string>();
+        if (stat(path.c_str(), nullptr)){
+          unlink(path.c_str());
+        }
         G4GDMLParser gdml;
         gdml.Write(path, stdc->GetWorld());
     }
