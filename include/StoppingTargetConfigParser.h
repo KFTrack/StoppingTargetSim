@@ -25,8 +25,10 @@
 #include <G4MultiUnion.hh>
 #include <G4TessellatedSolid.hh>
 #include <G4TriangularFacet.hh>
+#include <G4QuadrangularFacet.hh>
 
 #include <YamlParser.h>
+#include <tuple>
 #include <unordered_map>
 using namespace std;
 
@@ -58,4 +60,5 @@ class StoppingTargetConfigParser {
       void CalculateBasisAndRotation(G4ThreeVector a, G4ThreeVector b, G4ThreeVector c, G4RotationMatrix& rotation);
       void LoadPoints(const YamlNode& pointsNode, vector<G4ThreeVector>* pointsList);
 
+      G4VSolid* constructorTessellatedSolid(const YamlNode& paramNode);
 };

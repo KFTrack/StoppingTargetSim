@@ -30,6 +30,8 @@ G4VSolid* StoppingTargetConfigParser::getVSolid(string name, const YamlNode& par
         rv = constructorTubsVSolid(params);
     } else if(name == "custom") {
         rv = constructorBoundedPlane(params);
+    } else if(name == "tessellation") {
+        rv = constructorTessellatedSolid(params);
     } else {
         // Error out
     }
@@ -307,4 +309,135 @@ void StoppingTargetConfigParser::CreateSolid(const YamlNode& config) {
     cout << "fin rot" << endl;
     placeSolid(node, log_volume, rot);
     cout << "placed solid" << endl;
+}
+
+G4VSolid* StoppingTargetConfigParser::constructorTessellatedSolid(const YamlNode& paramNode) {
+    double thickness;
+    YamlNode params = YamlNode(paramNode);
+    if (params.has_child("pThickness")){
+        thickness = params["pThickness"].Value<double>() * CLHEP::m;
+    }
+    else{
+        // TODO exception
+    }
+
+    cout << "tessellated solid" << endl;
+
+    YamlNode aPointsList = params["a"];
+    vector<G4ThreeVector> aPoints;
+    LoadPoints(aPointsList, &aPoints);
+
+    YamlNode bPointsList = params["b"];
+    vector<G4ThreeVector> bPoints;
+    LoadPoints(bPointsList, &bPoints);
+
+    int numPoints = aPoints.size();
+    // TODO assert(aPoints.size() == bPoints.size())
+
+    // quadrilateral vertices (bi-curve-point-pairs) and triangle edges
+    G4ThreeVector a1, a2, b1, b2;
+    G4ThreeVector u, v;
+
+    G4TessellatedSolid* rv = new G4TessellatedSolid("Tessellation");
+
+    size_t dimensions = 3;
+    using Coordinates = std::tuple<G4ThreeVector,
+                                   G4ThreeVector,
+                                   G4ThreeVector>;
+    // interior points on a curve are counted triply, as they participate
+    // in triangles, each with a pairwise commmon edge. the endpoints of
+    // each are (single,double) counted, summing to triply counted.
+    // thus the # of points per curve is 3*(n - 2) + 3 = 3*(n - 1).
+    // each quadrilaterial endcap contributes 4 points, summed to 2*4 = 8.
+    // thus the total # of points defining the tessellation is
+    // 2*3*(n - 1) + 8 = 6*n  + 2 = 3*(n + 1);
+    size_t n_vertices = 3*(numPoints + 1);
+    std::vector< std::tuple<G4ThreeVector, G4ThreeVector,
+                            G4ThreeVector, G4ThreeVector> >
+        endcaps(2);
+    for (size_t i = 0 ; i < numPoints - 1 ; i++){
+        // each quadruplet of points defines four triangular surfaces:
+        // two seen longitudinally along the curves, diagonally dividing
+        // the quadruplet, and two seen orthogonally, buffered by the solid
+        // thickness. the ordering here respects the anticlockwise ordering
+        // of the coordinates when viewed from the inside
+        // TODO this can be enforced by enforcing that the cross-product-normal
+        // extends outward from the solid
+        size_t ialo = i;
+        size_t iblo = i;
+        size_t iahi = ialo + 1;
+        size_t ibhi = iblo + 1;
+        a1 = aPoints[ialo];
+        a2 = aPoints[iahi];
+        b1 = bPoints[iblo];
+        b2 = bPoints[ibhi];
+        u = b2 - b1;
+        v = a1 - b1;
+        G4ThreeVector normal = u.cross(v);
+        G4ThreeVector buffer = 0.5*thickness*normal;
+        Coordinates inner_upper(a1 + buffer, b1 + buffer, b2 + buffer);
+        Coordinates inner_lower(b2 + buffer, a2 + buffer, a1 + buffer);
+        Coordinates outer_upper(b2 - buffer, b1 - buffer, a1 - buffer);
+        Coordinates outer_lower(a1 - buffer, a2 - buffer, b2 - buffer);
+        std::vector<Coordinates> coordinatess = {inner_upper, inner_lower,
+                                                 outer_upper, outer_lower};
+      //std::vector<Coordinates> coordinatess = {inner_upper, inner_lower};
+        for (const auto& coordinates: coordinatess){
+            G4TriangularFacet* facet = new G4TriangularFacet(
+                                                std::get<0>(coordinates),
+                                                std::get<1>(coordinates),
+                                                std::get<2>(coordinates),
+                                                ABSOLUTE
+            );
+            bool added = rv->AddFacet((G4VFacet*) facet);
+            continue;
+        }
+
+        // add the rectangular strips connecting the two vanes
+        G4QuadrangularFacet* upper = new G4QuadrangularFacet(b1 - buffer,
+                                                             b2 - buffer,
+                                                             b2 + buffer,
+                                                             b1 + buffer,
+                                                             ABSOLUTE);
+        G4QuadrangularFacet* lower = new G4QuadrangularFacet(a1 + buffer,
+                                                             a2 + buffer,
+                                                             a2 - buffer,
+                                                             a1 - buffer,
+                                                             ABSOLUTE);
+        rv->AddFacet((G4VFacet*) upper);
+        rv->AddFacet((G4VFacet*) lower);
+
+        // cache endpoints, with usual counter-clockwise ordering
+        if (i == 0){
+            auto& endpoints = endcaps[0];
+            std::get<0>(endpoints) = a1 + buffer;
+            std::get<1>(endpoints) = a1 - buffer;
+            std::get<2>(endpoints) = b1 - buffer;
+            std::get<3>(endpoints) = b1 + buffer;
+        }
+        else if (i == numPoints - 2){
+            auto& endpoints = endcaps[1];
+            std::get<0>(endpoints) = a2 - buffer;
+            std::get<1>(endpoints) = a2 + buffer;
+            std::get<2>(endpoints) = b2 + buffer;
+            std::get<3>(endpoints) = b2 - buffer;
+        }
+    }
+    // now add the endcaps
+    for (const auto& endpoints: endcaps){
+        G4QuadrangularFacet* facet = new G4QuadrangularFacet(
+                                            std::get<0>(endpoints),
+                                            std::get<1>(endpoints),
+                                            std::get<2>(endpoints),
+                                            std::get<3>(endpoints),
+                                            ABSOLUTE
+        );
+        bool added = rv->AddFacet((G4VFacet*) facet);
+        continue;
+    }
+
+    // finalize
+    rv->SetSolidClosed(true);
+
+    return rv;
 }
