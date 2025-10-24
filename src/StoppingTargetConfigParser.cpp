@@ -321,6 +321,14 @@ G4VSolid* StoppingTargetConfigParser::constructorTessellatedSolid(const YamlNode
         // TODO exception
     }
 
+    string name;
+    if (params.has_child("pName")){
+        name = params["pName"].Value<string>();
+    }
+    else{
+        // TODO exception
+    }
+
     cout << "tessellated solid" << endl;
 
     YamlNode aPointsList = params["a"];
@@ -338,15 +346,15 @@ G4VSolid* StoppingTargetConfigParser::constructorTessellatedSolid(const YamlNode
     G4ThreeVector a1, a2, b1, b2;
     G4ThreeVector u, v;
 
-    G4TessellatedSolid* rv = new G4TessellatedSolid("Tessellation");
+    G4TessellatedSolid* rv = new G4TessellatedSolid("Tessellation_" + name);
 
     size_t dimensions = 3;
     using Coordinates = std::tuple<G4ThreeVector,
                                    G4ThreeVector,
                                    G4ThreeVector>;
-    // interior points on a curve are counted triply, as they participate
-    // in triangles, each with a pairwise commmon edge. the endpoints of
-    // each are (single,double) counted, summing to triply counted.
+    // interior points on a curve are triple-counted, as they participate
+    // in three triangles, each with a pairwise commmon edge. the endpoints
+    // of each are (single- or double-) counted, summing to triple-counted.
     // thus the # of points per curve is 3*(n - 2) + 3 = 3*(n - 1).
     // each quadrilaterial endcap contributes 4 points, summed to 2*4 = 8.
     // thus the total # of points defining the tessellation is
