@@ -381,7 +381,7 @@ G4VSolid* StoppingTargetConfigParser::constructorTessellatedSolid(const YamlNode
         b2 = bPoints[ibhi];
         u = b2 - b1;
         v = a1 - b1;
-        G4ThreeVector normal = u.cross(v);
+        G4ThreeVector normal = u.cross(v).unit();
         G4ThreeVector buffer = 0.5*thickness*normal;
         Coordinates inner_upper(a1 + buffer, b1 + buffer, b2 + buffer);
         Coordinates inner_lower(b2 + buffer, a2 + buffer, a1 + buffer);
