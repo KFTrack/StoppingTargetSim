@@ -53,7 +53,7 @@ void StoppingTargetDetectorConstruction::CreateWorldLog(){
 
     G4Material* world_material = nist->FindOrBuildMaterial("Vacuum");
     // G4Material* world_material = nist->FindOrBuildMaterial("G4_AIR");
-    G4Box* world_solid = new G4Box("world", dim, dim, dim);
+    G4Tubs* world_solid = new G4Tubs("world", 0*CLHEP::m, 10*CLHEP::m, 4*CLHEP::m, 0*CLHEP::deg, 360*CLHEP::deg);
     
     world_log = new G4LogicalVolume(world_solid, world_material, "world"); 
 }
