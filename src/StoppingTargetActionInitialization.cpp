@@ -7,13 +7,17 @@
 StoppingTargetActionInitialization::StoppingTargetActionInitialization(EventGenerator* generator, std::string opath){
     this->generator = generator;
     this->opath = opath;
+    this->file.Open(this->opath.c_str(), "RECREATE");
 }
 
 StoppingTargetActionInitialization::~StoppingTargetActionInitialization(){
-    /**/
+    this->file.Close();
 }
 
 void StoppingTargetActionInitialization::Build() const{
+    // predefine stepping sink
+    auto step_sink = new StepAggregateNtupleTrackingSink(this->file);
+
     // call below, as applicable
 
     // G4VUserPrimaryGeneratorAction: specify primary particles
@@ -26,17 +30,19 @@ void StoppingTargetActionInitialization::Build() const{
     // this->SetUserAction(G4UserRunAction*);
 
     // G4UserEventAction: begin-/end-of-event bookkeeping
-    // this->SetUserAction(G4UserEventAction*);
+    auto eventAction = new StoppingTargetEventAction(step_sink);
+    this->SetUserAction(eventAction);
 
     // G4UserStackingAction: details of track stacking
     // this->SetUserAction(G4UserStackingAction*);
 
     // G4UserTrackingAction: begin-/end-of-track actions / bookkeeping
     // this->SetUserAction(G4UserTrackingAction*);
-    auto sink = new NtupleTrackingSink(this->opath);
-    auto tbk = new TrackBookkeeper(sink);
+    auto track_sink = new NtupleTrackingSink(this->file);
+    auto tbk = new TrackBookkeeper(track_sink);
     this->SetUserAction(tbk);
 
     // G4UserSteppingAction: end-of-step actions / bookkeeping
-    // this->SetUserAction(G4UserSteppingAction*);
+    auto sbk = new StepBookkeeper(step_sink);
+    this->SetUserAction(sbk);
 }

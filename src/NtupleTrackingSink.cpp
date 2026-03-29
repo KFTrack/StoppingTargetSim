@@ -4,9 +4,8 @@
 
 #include <NtupleTrackingSink.h>
 
-NtupleTrackingSink::NtupleTrackingSink(std::string path){
+NtupleTrackingSink::NtupleTrackingSink(const TFile& file): file(file){
     // initialize root classes
-    this->file.Open(path.c_str(), "RECREATE");
     this->tree = new TTree("PerTrack", "PerTrack");
 
     // particle-level metadata
@@ -51,7 +50,6 @@ NtupleTrackingSink::NtupleTrackingSink(std::string path){
 
 NtupleTrackingSink::~NtupleTrackingSink(){
     this->tree->Write("PerTrack", TObject::kOverwrite);
-    this->file.Close();
     delete this->tree;
 }
 

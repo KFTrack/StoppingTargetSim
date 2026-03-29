@@ -6,8 +6,12 @@
 #define STOPPINGTARGETACTIONINITIALIZATION_H
 
 #include <string>
+#include <TFile.h>
 #include <G4VUserActionInitialization.hh>
+#include <StoppingTargetEventAction.h>
 #include <StoppingTargetPrimaryGeneratorAction.h>
+#include <StepAggregateNtupleTrackingSink.h>
+#include <StepBookkeeper.h>
 #include <TrackBookkeeper.h>
 #include <NtupleTrackingSink.h>
 #include <EventGenerator.h>
@@ -28,6 +32,7 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   protected:
     std::string opath;
     EventGenerator* generator;
+    TFile file;
   private:
   	/**/
 };
