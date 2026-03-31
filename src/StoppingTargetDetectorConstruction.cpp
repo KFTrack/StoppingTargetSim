@@ -69,6 +69,29 @@ void StoppingTargetDetectorConstruction::ConstructSDAndField() {
     globalFieldManager->CreateChordFinder(magField);
 }
 
+
+G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructTracker(){
+    //To do: model tracker as strictly cylindrical using specifications from doc db888
+    //outer radius = 700mm, inner = 380mm
+    //18 stations w/ spacing 174mm center to center, station thickness = 104.778
+    G4double innerRadius = 380 *CLHEP::mm;
+    G4double outerRadius = 700 *CLHEP::mm;
+    G4double hz = (17*174 + 104.778) / 2 *CLHEP::mm;
+    G4double startAngle = 0.*CLHEP::deg;
+    G4double spanningAngle = 360.*CLHEP::deg;
+    G4Tubs* tracker_solid = new G4Tubs("Tracker", innerRadius, outerRadius, hz, startAngle, spanningAngle);
+
+    G4LogicalVolume* world = this->GetWorld();
+    G4Material* world_material = world->GetMaterial(); // virtual tracker
+    G4LogicalVolume* tracker_log  = new G4LogicalVolume(tracker_solid, world_material, "Tracker");
+    G4double zTrackerStart = 5.326* CLHEP::m;
+    G4double zTrackerCenter = zTrackerStart + hz;
+    G4ThreeVector trackerPosition(0, 0, zTrackerCenter);
+
+    G4VPhysicalVolume* tracker_phys = new G4PVPlacement(0, trackerPosition, tracker_log, "Tracker", world, false, 0);
+    return tracker_phys;
+}
+
 G4VPhysicalVolume* StoppingTargetDetectorConstruction::Construct(){
     // double dim = 2.0 * CLHEP::m;
     // G4ThreeVector origin(0.0, 0.0, 0.0);
@@ -91,6 +114,7 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::Construct(){
     // return rv;
 
     G4VPhysicalVolume* rv = ConstructCustom();
+    ConstructTracker();
     ConstructSDAndField();
     // G4VPhysicalVolume* rv = world_phys;
     this->world = world_log;
