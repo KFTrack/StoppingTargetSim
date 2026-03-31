@@ -53,7 +53,7 @@ void StoppingTargetDetectorConstruction::CreateWorldLog(){
 
     G4Material* world_material = nist->FindOrBuildMaterial("Vacuum");
     // G4Material* world_material = nist->FindOrBuildMaterial("G4_AIR");
-    G4Tubs* world_solid = new G4Tubs("world", 0*CLHEP::m, 10*CLHEP::m, 4*CLHEP::m, 0*CLHEP::deg, 360*CLHEP::deg);
+    G4Tubs* world_solid = new G4Tubs("world", 0*CLHEP::m, 4*CLHEP::m, 10*CLHEP::m, 0*CLHEP::deg, 360*CLHEP::deg);
     
     world_log = new G4LogicalVolume(world_solid, world_material, "world"); 
 }
@@ -81,7 +81,7 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructTracker(){
     G4double spanningAngle = 360.*CLHEP::deg;
     G4Tubs* tracker_solid = new G4Tubs("Tracker", innerRadius, outerRadius, hz, startAngle, spanningAngle);
 
-    G4LogicalVolume* world = this->GetWorld();
+    G4LogicalVolume* world = this->world_log;
     G4Material* world_material = world->GetMaterial(); // virtual tracker
     G4LogicalVolume* tracker_log  = new G4LogicalVolume(tracker_solid, world_material, "Tracker");
     G4double zTrackerStart = 5.326* CLHEP::m;
