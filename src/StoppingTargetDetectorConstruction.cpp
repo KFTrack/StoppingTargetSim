@@ -107,7 +107,7 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCylinderUST(){
     G4LogicalVolume* world = this->world_log;
     G4Material* world_material = world->GetMaterial(); 
     G4LogicalVolume* cylinder_ust_log  = new G4LogicalVolume(cylinder_ust_solid, world_material, "CylinderUST");
-    G4double zCylinderUSTStart = 2432 *CLHEP::mm;
+    G4double zCylinderUSTStart = 2432 *CLHEP::mm; //front of target - 2hz
     G4double zCylinderUSTCenter = zCylinderUSTStart + hz;
     G4ThreeVector cylinderUSTPosition(0, 0, zCylinderUSTCenter);
 
@@ -129,7 +129,7 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCylinderDST(){
     G4LogicalVolume* world = this->world_log;
     G4Material* world_material = world->GetMaterial(); 
     G4LogicalVolume* cylinder_dst_log  = new G4LogicalVolume(cylinder_dst_solid, world_material, "CylinderDST");
-    G4double zCylinderDSTStart = (5326 + 17*174 + 104.778) *CLHEP::mm;
+    G4double zCylinderDSTStart = (5326 + 17*174 + 104.778) *CLHEP::mm; //front of tracker + length of tracker (space between foils + ends)
     G4double zCylinderDSTCenter = zCylinderUSTStart + hz;
     G4ThreeVector cylinderDSTPosition(0, 0, zCylinderUSTCenter);
 
