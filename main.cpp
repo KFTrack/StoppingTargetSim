@@ -161,7 +161,19 @@ int main(int argc, char** argv){
         string msg = "unsupported generator: " + type;
         throw runtime_error(msg);
     }
-    auto stai = new StoppingTargetActionInitialization(generator, opath);
+
+    // add any instakill volumes
+    std::vector<std::string> kill_volumes;
+    if (config.has_child("kill_volumes")){
+        const auto& sequence = config["kill_volumes"];
+        for (const auto node: sequence){
+            auto volume = YamlNode(node).Value<string>();
+            kill_volumes.push_back(volume);
+        }
+    }
+
+
+    auto stai = new StoppingTargetActionInitialization(generator, opath, kill_volumes);
     manager->SetUserInitialization(stai);
     auto stdc = new StoppingTargetDetectorConstruction(config["detector"]);
     manager->SetUserInitialization(stdc);

@@ -6,8 +6,11 @@
 #define STOPPINGTARGETACTIONINITIALIZATION_H
 
 #include <string>
+#include <vector>
 #include <TFile.h>
 #include <G4VUserActionInitialization.hh>
+#include <ByVolumeKiller.h>
+#include <MultiSteppingAction.h>
 #include <StoppingTargetEventAction.h>
 #include <StoppingTargetPrimaryGeneratorAction.h>
 #include <StepAggregateNtupleTrackingSink.h>
@@ -18,7 +21,9 @@
 
 class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   public:
-    StoppingTargetActionInitialization(EventGenerator* generator, std::string opath);
+    StoppingTargetActionInitialization(EventGenerator* generator,
+                                       std::string opath,
+                                       std::vector<std::string> kill_volumes);
    ~StoppingTargetActionInitialization();
 
     // instantiate / register subclasses of the following:
@@ -33,6 +38,8 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
     std::string opath;
     EventGenerator* generator;
     TFile file;
+    std::vector<std::string> kill_volumes;
+
   private:
   	/**/
 };

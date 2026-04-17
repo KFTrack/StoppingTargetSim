@@ -4,10 +4,11 @@
 
 #include <StoppingTargetActionInitialization.h>
 
-StoppingTargetActionInitialization::StoppingTargetActionInitialization(EventGenerator* generator, std::string opath){
+StoppingTargetActionInitialization::StoppingTargetActionInitialization(EventGenerator* generator, std::string opath, std::vector<std::string> kill_volumes){
     this->generator = generator;
     this->opath = opath;
     this->file.Open(this->opath.c_str(), "RECREATE");
+    this->kill_volumes = kill_volumes;
 }
 
 StoppingTargetActionInitialization::~StoppingTargetActionInitialization(){
@@ -43,6 +44,13 @@ void StoppingTargetActionInitialization::Build() const{
     this->SetUserAction(tbk);
 
     // G4UserSteppingAction: end-of-step actions / bookkeeping
+    auto msa = new MultiSteppingAction();
     auto sbk = new StepBookkeeper(step_sink);
-    this->SetUserAction(sbk);
+    auto bvk = new ByVolumeKiller();
+    for (const auto& name: this->kill_volumes){
+        bvk->AddVolume(name);
+    }
+    msa->PushAction(sbk);
+    msa->PushAction(bvk);
+    this->SetUserAction(msa);
 }
