@@ -95,10 +95,10 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructTracker(){
 
 G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCylinderUST(){
     //upstream of the stopping target
-    //outer radius = 700mm, inner = 380mm
+    //outer radius = 4 meters == world radius
     //front of target: 2.632m
-    G4double innerRadius = 380 *CLHEP::mm;
-    G4double outerRadius = 700 *CLHEP::mm;
+    G4double innerRadius = 0.0 * CLHEP::m;
+    G4double outerRadius = 4.0 * CLHEP::m;
     G4double hz = 100 *CLHEP::mm;
     G4double startAngle = 0.*CLHEP::deg;
     G4double spanningAngle = 360.*CLHEP::deg;
@@ -118,9 +118,9 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCylinderUST(){
 
 G4VPhysicalVolume* StoppingTargetDetectorConstruction::ConstructCylinderDST(){
     //downstream of the tracker
-    //outer radius = 700mm, inner = 380mm
-    G4double innerRadius = 380 *CLHEP::mm;
-    G4double outerRadius = 700 *CLHEP::mm;
+    //outer radius = 4 meters == world radius
+    G4double innerRadius = 0.0 * CLHEP::m;
+    G4double outerRadius = 4.0 * CLHEP::m;
     G4double hz = 100 *CLHEP::mm;
     G4double startAngle = 0.*CLHEP::deg;
     G4double spanningAngle = 360.*CLHEP::deg;
@@ -160,6 +160,8 @@ G4VPhysicalVolume* StoppingTargetDetectorConstruction::Construct(){
 
     G4VPhysicalVolume* rv = ConstructCustom();
     ConstructTracker();
+    ConstructCylinderUST();
+    ConstructCylinderDST();
     ConstructSDAndField();
     // G4VPhysicalVolume* rv = world_phys;
     this->world = world_log;
