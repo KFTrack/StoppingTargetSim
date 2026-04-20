@@ -4,11 +4,12 @@
 
 #include <StoppingTargetActionInitialization.h>
 
-StoppingTargetActionInitialization::StoppingTargetActionInitialization(EventGenerator* generator, std::string opath, std::vector<std::string> kill_volumes){
+StoppingTargetActionInitialization::StoppingTargetActionInitialization(EventGenerator* generator, std::string opath, std::vector<std::string> kill_volumes, double global_time_limit){
     this->generator = generator;
     this->opath = opath;
     this->file.Open(this->opath.c_str(), "RECREATE");
     this->kill_volumes = kill_volumes;
+    this->global_time_limit = global_time_limit;
 }
 
 StoppingTargetActionInitialization::~StoppingTargetActionInitialization(){
@@ -50,7 +51,9 @@ void StoppingTargetActionInitialization::Build() const{
     for (const auto& name: this->kill_volumes){
         bvk->AddVolume(name);
     }
+    auto btk = new ByGlobalTimeKiller(this->global_time_limit);
     msa->PushAction(sbk);
     msa->PushAction(bvk);
+    msa->PushAction(btk);
     this->SetUserAction(msa);
 }

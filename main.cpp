@@ -172,8 +172,16 @@ int main(int argc, char** argv){
         }
     }
 
+    // unilateral kill conditions
+    double global_time_limit = 100.0 * CLHEP::us;
+    if (config.has_child("global_time_limit")){
+      global_time_limit = config["global_time_limit"].Value<double>();
+    }
 
-    auto stai = new StoppingTargetActionInitialization(generator, opath, kill_volumes);
+    auto stai = new StoppingTargetActionInitialization(generator,
+                                                       opath,
+                                                       kill_volumes,
+                                                       global_time_limit);
     manager->SetUserInitialization(stai);
     auto stdc = new StoppingTargetDetectorConstruction(config["detector"]);
     manager->SetUserInitialization(stdc);

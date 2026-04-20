@@ -9,6 +9,7 @@
 #include <vector>
 #include <TFile.h>
 #include <G4VUserActionInitialization.hh>
+#include <ByGlobalTimeKiller.h>
 #include <ByVolumeKiller.h>
 #include <MultiSteppingAction.h>
 #include <StoppingTargetEventAction.h>
@@ -23,7 +24,8 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   public:
     StoppingTargetActionInitialization(EventGenerator* generator,
                                        std::string opath,
-                                       std::vector<std::string> kill_volumes);
+                                       std::vector<std::string> kill_volumes,
+                                       double global_time_limit);
    ~StoppingTargetActionInitialization();
 
     // instantiate / register subclasses of the following:
@@ -39,6 +41,8 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
     EventGenerator* generator;
     TFile file;
     std::vector<std::string> kill_volumes;
+    double global_time_limit;
+    double step_size_limit;
 
   private:
   	/**/
