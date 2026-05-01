@@ -9,7 +9,9 @@ MultiSteppingAction::MultiSteppingAction(){
 }
 
 MultiSteppingAction::~MultiSteppingAction(){
-    /**/
+    for (size_t i = 0 ; i < this->actions.size() ; i++){
+        delete this->actions[i];
+    }
 }
 
 void MultiSteppingAction::PushAction(G4UserSteppingAction* action){
