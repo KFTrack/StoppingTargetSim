@@ -8,6 +8,10 @@ NtupleTrackingSink::NtupleTrackingSink(const TFile& file): file(file){
     // initialize root classes
     this->tree = new TTree("PerTrack", "PerTrack");
 
+    // event-level metadata
+    this->ntuple.Register<Int_t>    ("event");
+    this->ntuple.Set("event", -1);
+
     // particle-level metadata
     this->ntuple.Register<Int_t>    ("pdg");
     this->ntuple.Register<Int_t>    ("id");
@@ -54,6 +58,10 @@ NtupleTrackingSink::~NtupleTrackingSink(){
 }
 
 void NtupleTrackingSink::PreDigest(const G4Track* track){
+    // event-level metadata
+    auto event = this->ntuple.Get<Int_t>("event") + 1;
+    this->ntuple.Set("event", event);
+
     // particle-level metadata
     const G4ParticleDefinition* def = track->GetParticleDefinition();
     this->ntuple.Set("pdg", def->GetPDGEncoding());

@@ -8,6 +8,10 @@ StepAggregateNtupleTrackingSink::StepAggregateNtupleTrackingSink(const TFile& fi
     // initialize root classes
     this->tree = new TTree("PerStepAggregate", "PerStepAggregate");
 
+    // event-level metadata
+    this->ntuple.Register<Int_t>    ("event");
+    this->ntuple.Set("event", -1);
+
     // particle-level metadata
     this->ntuple.Register<Int_t>    ("pdg");
     this->ntuple.Register<Int_t>    ("id");
@@ -29,6 +33,10 @@ StepAggregateNtupleTrackingSink::~StepAggregateNtupleTrackingSink(){
 void StepAggregateNtupleTrackingSink::PostDigest(const G4Step* step){
     // reference containing track
     G4Track* track = step->GetTrack();
+
+    // event-level metadata
+    auto event = this->ntuple.Get<Int_t>("event") + 1;
+    this->ntuple.Set("event", event);
 
     // particle-level metadata
     const G4ParticleDefinition* def = track->GetParticleDefinition();
