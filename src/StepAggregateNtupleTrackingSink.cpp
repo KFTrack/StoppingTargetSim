@@ -34,10 +34,6 @@ void StepAggregateNtupleTrackingSink::PostDigest(const G4Step* step){
     // reference containing track
     G4Track* track = step->GetTrack();
 
-    // event-level metadata
-    auto event = this->ntuple.Get<Int_t>("event") + 1;
-    this->ntuple.Set("event", event);
-
     // particle-level metadata
     const G4ParticleDefinition* def = track->GetParticleDefinition();
     const auto pdg = def->GetPDGEncoding();
@@ -60,6 +56,10 @@ void StepAggregateNtupleTrackingSink::PostDigest(const G4Step* step){
 }
 
 void StepAggregateNtupleTrackingSink::Flush(){
+    // event-level metadata
+    auto event = this->ntuple.Get<Int_t>("event") + 1;
+    this->ntuple.Set("event", event);
+
     // flush all entries
     for (const auto ppair: this->pdgs){
         // particle-level is duplicatd per entry
