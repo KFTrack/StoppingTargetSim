@@ -47,7 +47,8 @@ int main(int argc, char** argv){
     bool vis = false;
     bool shell = false;
     long seed = 1; // TODO hash of PID and system time
-    while ((c = getopt(argc, argv, "i:o:s:vx")) != -1){
+    int run = 0;
+    while ((c = getopt(argc, argv, "i:o:s:r:vx")) != -1){
         switch(c){
             // path to macro
             case 'i':
@@ -60,6 +61,10 @@ int main(int argc, char** argv){
             // random seed
             case 's':
                 seed = atol(optarg);
+                break;
+            // run number
+            case 'r':
+                run = atoi(optarg);
                 break;
             // optional visualization
             case 'v':
@@ -178,7 +183,8 @@ int main(int argc, char** argv){
       global_time_limit = config["global_time_limit"].Value<double>();
     }
 
-    auto stai = new StoppingTargetActionInitialization(generator,
+    auto stai = new StoppingTargetActionInitialization(run,
+                                                       generator,
                                                        opath,
                                                        kill_volumes,
                                                        global_time_limit);

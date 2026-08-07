@@ -14,7 +14,7 @@
 
 class StepAggregateNtupleTrackingSink: public TrackingSink{
   public:
-    StepAggregateNtupleTrackingSink(const TFile& file);
+    StepAggregateNtupleTrackingSink(const int run, const TFile& file);
    ~StepAggregateNtupleTrackingSink();
     void PostDigest(const G4Step* step);
     void Flush();

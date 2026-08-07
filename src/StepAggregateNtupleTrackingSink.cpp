@@ -4,11 +4,13 @@
 
 #include <StepAggregateNtupleTrackingSink.h>
 
-StepAggregateNtupleTrackingSink::StepAggregateNtupleTrackingSink(const TFile& file): file(file){
+StepAggregateNtupleTrackingSink::StepAggregateNtupleTrackingSink(const int run, const TFile& file): file(file){
     // initialize root classes
     this->tree = new TTree("PerStepAggregate", "PerStepAggregate");
 
     // event-level metadata
+    this->ntuple.Register<Int_t>    ("run");
+    this->ntuple.Set("run", run);
     this->ntuple.Register<Int_t>    ("event");
     this->ntuple.Set("event", -1);
 

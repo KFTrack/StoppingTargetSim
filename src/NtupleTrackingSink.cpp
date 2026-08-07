@@ -4,11 +4,13 @@
 
 #include <NtupleTrackingSink.h>
 
-NtupleTrackingSink::NtupleTrackingSink(const TFile& file): file(file){
+NtupleTrackingSink::NtupleTrackingSink(const int run, const TFile& file): file(file){
     // initialize root classes
     this->tree = new TTree("PerTrack", "PerTrack");
 
     // event-level metadata
+    this->ntuple.Register<Int_t>    ("run");
+    this->ntuple.Set("run", run);
     this->ntuple.Register<Int_t>    ("event");
     this->ntuple.Set("event", -1);
 

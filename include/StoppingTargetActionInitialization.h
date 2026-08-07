@@ -22,7 +22,8 @@
 
 class StoppingTargetActionInitialization: public G4VUserActionInitialization{
   public:
-    StoppingTargetActionInitialization(EventGenerator* generator,
+    StoppingTargetActionInitialization(int run,
+                                       EventGenerator* generator,
                                        std::string opath,
                                        std::vector<std::string> kill_volumes,
                                        double global_time_limit);
@@ -37,6 +38,7 @@ class StoppingTargetActionInitialization: public G4VUserActionInitialization{
     // G4UserSteppingAction         : end-of-step actions / bookkeeping
     void Build() const;
   protected:
+    int run;
     std::string opath;
     EventGenerator* generator;
     TFile file;

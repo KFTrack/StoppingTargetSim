@@ -14,7 +14,7 @@
 
 class NtupleTrackingSink: public TrackingSink{
   public:
-    NtupleTrackingSink(const TFile& file);
+    NtupleTrackingSink(const int run, const TFile& file);
    ~NtupleTrackingSink();
     void PreDigest(const G4Track* track);
     void PostDigest(const G4Track* track);

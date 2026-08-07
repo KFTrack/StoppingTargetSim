@@ -4,7 +4,8 @@
 
 #include <StoppingTargetActionInitialization.h>
 
-StoppingTargetActionInitialization::StoppingTargetActionInitialization(EventGenerator* generator, std::string opath, std::vector<std::string> kill_volumes, double global_time_limit){
+StoppingTargetActionInitialization::StoppingTargetActionInitialization(int run, EventGenerator* generator, std::string opath, std::vector<std::string> kill_volumes, double global_time_limit){
+    this->run = run;
     this->generator = generator;
     this->opath = opath;
     this->file.Open(this->opath.c_str(), "RECREATE");
@@ -18,7 +19,7 @@ StoppingTargetActionInitialization::~StoppingTargetActionInitialization(){
 
 void StoppingTargetActionInitialization::Build() const{
     // predefine stepping sink
-    auto step_sink = new StepAggregateNtupleTrackingSink(this->file);
+    auto step_sink = new StepAggregateNtupleTrackingSink(this->run, this->file);
 
     // call below, as applicable
 
@@ -40,7 +41,7 @@ void StoppingTargetActionInitialization::Build() const{
 
     // G4UserTrackingAction: begin-/end-of-track actions / bookkeeping
     // this->SetUserAction(G4UserTrackingAction*);
-    auto track_sink = new NtupleTrackingSink(this->file);
+    auto track_sink = new NtupleTrackingSink(this->run, this->file);
     auto tbk = new TrackBookkeeper(track_sink);
     this->SetUserAction(tbk);
 
